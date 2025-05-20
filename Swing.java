@@ -4,7 +4,6 @@ public class Swing extends Actor {
     private GreenfootImage[] frames = new GreenfootImage[3];
     private int currentFrame = 0;
     private int frameDelay = 0;
-
     public Swing() {
         for (int i = 0; i < 3; i++) {
             frames[i] = new GreenfootImage("images/attacks/swing" + (i + 1) + ".png");
@@ -18,6 +17,7 @@ public class Swing extends Actor {
         if (frameDelay >= 5) {
             frameDelay = 0;
             currentFrame++;//change anim frame
+            checkHit();
             if (currentFrame >= 2) {
                 getWorld().removeObject(this);
             }
@@ -29,5 +29,11 @@ public class Swing extends Actor {
         if (dir.equals("left")) setRotation(180);
         if (dir.equals("up")) setRotation(270);
         if (dir.equals("down")) setRotation(90);
+    }
+    public void checkHit(){
+        if (isTouching(Enemy.class)) {
+            MyWorld world = (MyWorld) getWorld();
+            world.increaseScore();  // Increase score
+        }
     }
 }

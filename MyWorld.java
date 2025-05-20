@@ -1,6 +1,9 @@
 import greenfoot.*;
 
 public class MyWorld extends World {
+    Swing objectA = new Swing();
+    public int score = 5;
+    Label scoreLabel;
     public MyWorld() {
         super(1000, 600, 1);
 
@@ -9,6 +12,8 @@ public class MyWorld extends World {
         setBackground(bg);
 
         setupWorld();
+        scoreLabel = new Label(score, 80);
+        addObject(scoreLabel, 50, 50);
     }
 
     private void setupWorld() {
@@ -39,5 +44,10 @@ public class MyWorld extends World {
 
         swing.setRotationBasedOnDirection(direction);
         addObject(swing, x, y);
+    }
+    public void increaseScore()
+    {
+        score++;
+        scoreLabel.setValue(score); // Update the score on the label
     }
 }

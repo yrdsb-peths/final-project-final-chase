@@ -1,16 +1,21 @@
 import greenfoot.*;
 
-public class Walker extends Actor {
+public class Walker extends Enemy {
     private int velocityY = 0;
     private final int gravity = 1;
     private final int maxFallSpeed = 10;
     private boolean onGround = false;
+    private GreenfootImage idleImage;
     
+    public Walker(){
+        idleImage = (ImageUtils.scale("enemies/walker/walkerIdle.png", 50, 60));
+        setImage(idleImage);
+    }
 
     public void act() {
         applyGravity();
         checkGround();
-        move(-1);
+        //move(-1);
     }
 
     private void applyGravity() {
