@@ -52,8 +52,8 @@ public class Player extends Actor {
         attackImage = new GreenfootImage("images/player/attacks/swing3.png");
         
         dashImages = new GreenfootImage[3];
-        dashImages[0] = new GreenfootImage(ImageUtils.scale("player/dash/dash1.png", 180, 50));
-        dashImages[1] = new GreenfootImage(ImageUtils.scale("player/dash/dash2.png", 120, 50)); //stretchy
+        dashImages[0] = new GreenfootImage(ImageUtils.scale("player/dash/dash1.png", 150, 50));
+        dashImages[1] = new GreenfootImage(ImageUtils.scale("player/dash/dash2.png", 110, 50)); //stretchy
         dashImages[2] = new GreenfootImage(ImageUtils.scale("player/dash/dash3.png", 80, 50));
         dashImage = dashImages[0];
 

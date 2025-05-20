@@ -4,6 +4,7 @@ public class Swing extends Actor {
     private GreenfootImage[] frames = new GreenfootImage[3];
     private int currentFrame = 0;
     private int frameDelay = 0;
+    private boolean hit = false;//prevents multihits
     public Swing() {
         for (int i = 0; i < 3; i++) {
             frames[i] = new GreenfootImage("images/attacks/swing" + (i + 1) + ".png");
@@ -31,9 +32,10 @@ public class Swing extends Actor {
         if (dir.equals("down")) setRotation(90);
     }
     public void checkHit(){
-        if (isTouching(Enemy.class)) {
+        if (isTouching(Enemy.class)&&hit == false) {
             MyWorld world = (MyWorld) getWorld();
             world.increaseScore();  // Increase score
+            hit = true;//prevents multihits
         }
     }
 }
