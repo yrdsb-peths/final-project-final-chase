@@ -9,6 +9,7 @@ public class Swing extends Actor {
         for (int i = 0; i < 3; i++) {
             frames[i] = new GreenfootImage("images/attacks/swing" + (i + 1) + ".png");
         }
+        frames[0] = ImageUtils.scale("attacks/leftswing.png", 120, 60);
         setImage(frames[0]);
     }
 
@@ -17,10 +18,8 @@ public class Swing extends Actor {
         if (frameDelay >= 5) {
             frameDelay = 0;
             currentFrame++;//change anim frame
-            if (currentFrame >= frames.length) {
+            if (currentFrame >= 2) {
                 getWorld().removeObject(this);
-            } else {
-                setImage(frames[currentFrame]);//handle animation
             }
         }
     }

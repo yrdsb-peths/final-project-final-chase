@@ -110,6 +110,7 @@ public class Player extends Actor {
             jumpTimer = 0;
             onGround = false;
             velocityY = jumpStrength;
+            setImage(ImageUtils.scale("player/jump.png", 40, 60));
         }
     
         if (isJumping && Greenfoot.isKeyDown("space")) {
