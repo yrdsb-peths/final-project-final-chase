@@ -39,15 +39,17 @@ public class Player extends Actor {
 
     public Player() {
         idleImages = new GreenfootImage[1];
-        idleImages[0] = new GreenfootImage("player/idle.png");
-
+        idleImages[0] = ImageUtils.scale("player/idle.png", 30, 60);
+        
         runImages = new GreenfootImage[4];
-        for (int i = 0; i < runImages.length; i++) {
-            runImages[i] = new GreenfootImage("player/run/run" + (i + 1) + ".png");
-        }
 
+        runImages[0] = ImageUtils.scale("player/run/run1.png", 37, 60);
+        runImages[1] = ImageUtils.scale("player/run/run2.png", 37, 60);
+        runImages[2] = ImageUtils.scale("player/run/run3.png", 37, 60);
+        runImages[3] = ImageUtils.scale("player/run/run4.png", 37, 60);
+        
         attackImage = new GreenfootImage("images/player/attacks/swing3.png");
-        dashImage = new GreenfootImage("images/player/dash.png");
+        dashImage = new GreenfootImage(ImageUtils.scale("player/dash.png", 90, 50));
 
         GreenfootImage start = new GreenfootImage(idleImages[0]);
         start.mirrorHorizontally();
@@ -218,4 +220,5 @@ public class Player extends Actor {
         swing.setRotationBasedOnDirection(dir);
         world.addObject(swing, spawnX, spawnY);
     }
+    
 }
