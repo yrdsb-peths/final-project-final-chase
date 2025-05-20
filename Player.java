@@ -11,6 +11,7 @@ public class Player extends Actor {
 
     private GreenfootImage[] idleImages;
     private GreenfootImage[] runImages;
+    private GreenfootImage[] dashImages;
     private GreenfootImage attackImage;  // single attack frame
     private GreenfootImage dashImage;
 
@@ -49,7 +50,12 @@ public class Player extends Actor {
         runImages[3] = ImageUtils.scale("player/run/run4.png", 37, 60);
         
         attackImage = new GreenfootImage("images/player/attacks/swing3.png");
-        dashImage = new GreenfootImage(ImageUtils.scale("player/dash.png", 90, 50));
+        
+        dashImages = new GreenfootImage[3];
+        dashImages[0] = new GreenfootImage(ImageUtils.scale("player/dash/dash1.png", 180, 50));
+        dashImages[1] = new GreenfootImage(ImageUtils.scale("player/dash/dash2.png", 120, 50)); //stretchy
+        dashImages[2] = new GreenfootImage(ImageUtils.scale("player/dash/dash3.png", 80, 50));
+        dashImage = dashImages[0];
 
         GreenfootImage start = new GreenfootImage(idleImages[0]);
         start.mirrorHorizontally();
@@ -157,19 +163,30 @@ public class Player extends Actor {
     }
 
     private void dash() {
-        dashTimer--;
+        dashTimer--;  // Decrease the dash timer
+    
+        // Determine the direction of the dash based on the facing direction
         int dx = directionFacing.equals("right") ? dashSpeed : -dashSpeed;
         setLocation(getX() + dx, getY());
-
-        GreenfootImage img = new GreenfootImage(dashImage);
-        if (directionFacing.equals("left")) img.mirrorHorizontally();
+    
+        // Calculate which dash frame to use based on how long the dash has been happening
+        int dashFrame = (dashDuration - dashTimer) * dashImages.length / dashDuration;
+        dashFrame = Math.min(dashFrame, dashImages.length - 1); // Ensure we don't exceed the array bounds
+    
+        // Update the image for the dash
+        GreenfootImage img = new GreenfootImage(dashImages[dashFrame]);
+        if (directionFacing.equals("left")) {
+            img.mirrorHorizontally();  // Mirror the image if facing left
+        }
         setImage(img);
-
+    
+        // End the dash once the dashTimer reaches 0
         if (dashTimer <= 0) {
             isDashing = false;
-            velocityY = 0;
+            velocityY = 0;  // Reset the vertical velocity after the dash
         }
     }
+
 
     private void applyGravity() {
         velocityY += gravity;

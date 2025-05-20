@@ -5,6 +5,7 @@ public class Walker extends Actor {
     private final int gravity = 1;
     private final int maxFallSpeed = 10;
     private boolean onGround = false;
+    
 
     public void act() {
         applyGravity();
