@@ -9,6 +9,7 @@ public class Walker extends Enemy {
 
     private GreenfootImage[] runImages;
     private GreenfootImage idleImage;
+    private GreenfootImage hitImage;
 
     private int direction = 1; // 1 = right, -1 = left
     private int walkSpeed = 1;
@@ -16,12 +17,13 @@ public class Walker extends Enemy {
     private int pauseTimer = 0;
     private boolean isPaused = false;
     private boolean chasingPlayer = false;
-
+    private boolean x = true;
     private int runFrame = 0;
     private int runCounter = 0;
     private final int runDelay = 6;
-
+    private int health = 10;
     private Random rand = new Random();
+    private int hitFrames = 0;
 
     public Walker() {
         // Load run animation frames
@@ -32,12 +34,26 @@ public class Walker extends Enemy {
 
         idleImage = new GreenfootImage(runImages[0]);
         setImage(idleImage);
+        hitImage =ImageUtils.scale("enemies/walker/walkerHit.png", 50, 60);
     }
 
     public void act() {
-        applyGravity();
-        checkGround();
-        wanderOrChase();
+        if(hitFrames>0){
+            setImage(hitImage);
+            hitFrames--;
+        }else{
+            applyGravity();
+            checkGround();
+            if(x){
+                wanderOrChase();
+            }
+            if(!chasingPlayer){
+                x=!x;//slow down if not chasing
+            }
+            if (health <= 0) { //i put this here so it flashes white before dying
+                getWorld().removeObject(this);  // Remove the enemy if health is 0 or less
+            }
+        }
     }
 
     private void wanderOrChase() {
@@ -128,9 +144,9 @@ public class Walker extends Enemy {
         }
     }
 
-    private Player getNearestPlayer() {
+    private Player getNearestPlayer() {//lowk ctrl c + ctrl v from online
         return (Player) getWorld().getObjects(Player.class).stream()
-            .findFirst().orElse(null);
+        .findFirst().orElse(null);
     }
 
     private boolean isPlayerNearby(Player player) {
@@ -138,4 +154,10 @@ public class Walker extends Enemy {
         int dy = Math.abs(player.getY() - getY());
         return dx <= 100 && dy <= 100;
     }
+    public void decreaseHealth(int amount) {
+        health -= amount;
+        setImage(hitImage);
+        hitFrames = 5;  // Flash for 10 frames
+    }
+
 }

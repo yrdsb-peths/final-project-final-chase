@@ -1,9 +1,10 @@
 import greenfoot.*;
+import java.util.Random;
 
 public class Player extends Actor {
     private int velocityY = 0;
     private final int gravity = 1;
-    private final int jumpStrength = -10;
+    private final int jumpStrength = -11;
     private final int maxFallSpeed = 10;
     private boolean onGround = false;
 
@@ -37,6 +38,8 @@ public class Player extends Actor {
     private int swingCooldown = 0;
     private final int swingCooldownTime = 20;
     private final int swingDistance = 40;
+    
+    public int health = 100;
 
     public Player() {
         idleImages = new GreenfootImage[1];
@@ -87,6 +90,7 @@ public class Player extends Actor {
         if (dashCooldown > 0) {
             dashCooldown--;
         }
+        checkHit();
     }
     
     private void checkKeys() {
@@ -111,7 +115,7 @@ public class Player extends Actor {
             swingSpawned = false;
         }
     
-        if (onGround && Greenfoot.isKeyDown("space")) {
+        if (onGround && (Greenfoot.isKeyDown("space"))) {
             isJumping = true;
             jumpTimer = 0;
             onGround = false;
@@ -238,5 +242,17 @@ public class Player extends Actor {
         swing.setRotationBasedOnDirection(dir);
         world.addObject(swing, spawnX, spawnY);
     }
+    private void checkHit() {
+        if (isTouching(Enemy.class)) {
+            // Decrease health when the player touches an enemy
+            health--;
     
+            // Get the world and update the score (which also updates the score label)
+            MyWorld world = (MyWorld) getWorld();
+            world.setScore(health);  // Pass the updated health to the world
+        }
+    }
+    private void applyKnockBack(){
+        
+    }
 }

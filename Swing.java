@@ -31,11 +31,25 @@ public class Swing extends Actor {
         if (dir.equals("up")) setRotation(270);
         if (dir.equals("down")) setRotation(90);
     }
-    public void checkHit(){
-        if (isTouching(Enemy.class)&&hit == false) {
-            MyWorld world = (MyWorld) getWorld();
-            world.increaseScore();  // Increase score
-            hit = true;//prevents multihits
+    public void checkHit() {
+        if (isTouching(Enemy.class) && hit == false) {
+            // Get the enemy object that was touched
+            Enemy enemy = (Enemy) getOneIntersectingObject(Enemy.class);
+            
+            if (enemy != null) {
+                // Reduce the health of the touched enemy
+                if (enemy instanceof Walker) {  // Check if the enemy is a Walker
+                    Walker walker = (Walker) enemy; // Cast to Walker
+                    walker.decreaseHealth(4);  // Decrease health by 4
+                }
+            }
+            
+            // Increase score as previously
+            //MyWorld world = (MyWorld) getWorld();
+            //world.setScore();
+            
+            hit = true;  // Prevent multiple hits
         }
     }
+
 }

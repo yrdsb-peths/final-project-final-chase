@@ -4,6 +4,7 @@ public class MyWorld extends World {
     Swing objectA = new Swing();
     public int score = 0;
     Label scoreLabel;
+
     public MyWorld() {
         super(1000, 600, 1);
 
@@ -27,17 +28,19 @@ public class MyWorld extends World {
         addObject(g1, 180, 435);
         addObject(g2, 510, 490);
         addObject(g3, 800, 570);
+
         Walker walker1 = new Walker();
-        addObject(walker1,700,200);
+        addObject(walker1, 700, 200);
         Walker walker2 = new Walker();
-        addObject(walker2,500,200);
+        addObject(walker2, 500, 200);
+
     }
 
     public void spawnSwing(String direction, Player player) {
         Swing swing = new Swing();
         int x = player.getX();
         int y = player.getY();
-        int offset = 40 + swing.getImage().getWidth() / 2;
+        int offset = 50 + swing.getImage().getWidth() / 2;
 
         if (direction.equals("right")) x += offset;
         if (direction.equals("left")) x -= offset;
@@ -47,9 +50,9 @@ public class MyWorld extends World {
         swing.setRotationBasedOnDirection(direction);
         addObject(swing, x, y);
     }
-    public void increaseScore()
-    {
-        score++;
-        scoreLabel.setValue(score); // Update the score on the label
+
+    public void setScore(int setScore) {
+        score = setScore;
+        scoreLabel.setValue(score);  // Update the score label when the score changes
     }
 }
