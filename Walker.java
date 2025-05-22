@@ -34,24 +34,25 @@ public class Walker extends Enemy {
 
         idleImage = new GreenfootImage(runImages[0]);
         setImage(idleImage);
-        hitImage =ImageUtils.scale("enemies/walker/walkerHit.png", 50, 60);
+        hitImage = ImageUtils.scale("enemies/walker/walkerHit.png", 50, 60);
     }
 
     public void act() {
-        if(hitFrames>0){
+        if (hitFrames > 0) {
             setImage(hitImage);
             hitFrames--;
-        }else{
+        } else {
             applyGravity();
             checkGround();
-            if(x){
+            checkWall();
+            if (x) {
                 wanderOrChase();
             }
-            if(!chasingPlayer){
-                x=!x;//slow down if not chasing
+            if (!chasingPlayer) {
+                x = !x; // Slow down if not chasing
             }
-            if (health <= 0) { //i put this here so it flashes white before dying
-                getWorld().removeObject(this);  // Remove the enemy if health is 0 or less
+            if (health <= 0) { // If health reaches 0, remove the walker
+                getWorld().removeObject(this);
             }
         }
     }
@@ -117,36 +118,11 @@ public class Walker extends Enemy {
         }
     }
 
-    private void applyGravity() {
-        velocityY += gravity;
-        if (velocityY > maxFallSpeed) {
-            velocityY = maxFallSpeed;
-        }
-        setLocation(getX(), getY() + velocityY);
-    }
 
-    private void checkGround() {
-        World world = getWorld();
-        if (isTouching(Ground.class)) {
-            while (isTouching(Ground.class)) {
-                setLocation(getX(), getY() - 1);
-            }
-            velocityY = 0;
-            onGround = true;
-        } else {
-            onGround = false;
-        }
 
-        if (getY() + getImage().getHeight() / 2 >= world.getHeight()) {
-            setLocation(getX(), world.getHeight() - getImage().getHeight() / 2);
-            velocityY = 0;
-            onGround = true;
-        }
-    }
-
-    private Player getNearestPlayer() {//lowk ctrl c + ctrl v from online
+    private Player getNearestPlayer() {
         return (Player) getWorld().getObjects(Player.class).stream()
-        .findFirst().orElse(null);
+            .findFirst().orElse(null);
     }
 
     private boolean isPlayerNearby(Player player) {
@@ -154,15 +130,15 @@ public class Walker extends Enemy {
         int dy = Math.abs(player.getY() - getY());
         return dx <= 100 && dy <= 100;
     }
+
     public void decreaseHealth(int amount) {
         health -= amount;
         setImage(hitImage);
         hitFrames = 5;
         Player player = (Player) getWorld().getObjects(Player.class).get(0);
         player.checkPogo();
-        if (player != null) { //add 20 soul
-            player.addSoul(20);
+        if (player != null) { // Add 20 soul when hitting the player
+            player.addSoul(10);
         }
-
     }
 }

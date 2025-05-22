@@ -24,14 +24,23 @@ public class MyWorld extends World {
         Player player = new Player();
         addObject(player, 300, 200);
 
-        Ground g1 = new Ground(500, 100);
-        Ground g2 = new Ground(300, 100);
+        Ground g1 = new Ground(470, 100);
+        Ground g2 = new Ground(260, 100);
         Ground g3 = new Ground(400, 50);
 
         addObject(g1, 175, 460);
         addObject(g2, 515, 515);
         addObject(g3, 800, 570);
-
+        
+        Wall w1 = new Wall (20, 100);
+        addObject(w1, 415, 470);
+        Wall w2 = new Wall(20,100);
+        addObject(w2, 650, 530);
+        Wall w3 = new Wall(20,100);
+        addObject(w3,30,250);
+        Wall w4 = new Wall(20,200);
+        addObject(w4,420,120);
+        
         Walker walker1 = new Walker();
         addObject(walker1, 700, 200);
         Walker walker2 = new Walker();
