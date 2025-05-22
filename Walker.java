@@ -21,7 +21,7 @@ public class Walker extends Enemy {
     private int runFrame = 0;
     private int runCounter = 0;
     private final int runDelay = 6;
-    private int health = 10;
+    private int health = 14;
     private Random rand = new Random();
     private int hitFrames = 0;
 
@@ -157,7 +157,12 @@ public class Walker extends Enemy {
     public void decreaseHealth(int amount) {
         health -= amount;
         setImage(hitImage);
-        hitFrames = 5;  // Flash for 10 frames
-    }
+        hitFrames = 5;
+        Player player = (Player) getWorld().getObjects(Player.class).get(0);
+        player.checkPogo();
+        if (player != null) { //add 20 soul
+            player.addSoul(20);
+        }
 
+    }
 }

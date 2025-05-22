@@ -4,6 +4,7 @@ public class MyWorld extends World {
     Swing objectA = new Swing();
     public int score = 0;
     Label scoreLabel;
+    Label soulLabel;
 
     public MyWorld() {
         super(1000, 600, 1);
@@ -15,6 +16,8 @@ public class MyWorld extends World {
         setupWorld();
         scoreLabel = new Label(score, 80);
         addObject(scoreLabel, 50, 50);
+        soulLabel = new Label("soul",50);
+        addObject(soulLabel,50,100);
     }
 
     private void setupWorld() {
@@ -52,7 +55,9 @@ public class MyWorld extends World {
     }
 
     public void setScore(int setScore) {
-        score = setScore;
-        scoreLabel.setValue(score);  // Update the score label when the score changes
+        scoreLabel.setValue(setScore);  // Update the score label when the score changes
+    }
+    public void setSoul(int setSoul) {
+        soulLabel.setValue(setSoul);  // Update the score label when the score changes
     }
 }

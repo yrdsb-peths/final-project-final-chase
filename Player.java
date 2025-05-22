@@ -37,9 +37,10 @@ public class Player extends Actor {
     private boolean swingSpawned = false;
     private int swingCooldown = 0;
     private final int swingCooldownTime = 20;
-    private final int swingDistance = 40;
+    private final int swingDistance = 50;
     
     public int health = 100;
+    public int soul = 0;
 
     public Player() {
         idleImages = new GreenfootImage[1];
@@ -91,9 +92,15 @@ public class Player extends Actor {
             dashCooldown--;
         }
         checkHit();
+        MyWorld world = (MyWorld) getWorld();
+        world.setScore(health);
+        world.setSoul(soul);
     }
     
     private void checkKeys() {
+        if(Greenfoot.isKeyDown("a")){
+            focus();
+        }
         if (Greenfoot.isKeyDown("c") && !isDashing) {
             if (dashCooldown <= 0) {
                 isDashing = true;
@@ -235,12 +242,18 @@ public class Player extends Actor {
         switch (dir) {
             case "right": spawnX += swingDistance; break; //swingDistance=40
             case "left":  spawnX -= swingDistance; break;
-            case "up":    spawnY -= swingDistance; break;
-            case "down":  spawnY += swingDistance; break;
+            case "up":    spawnY -= (swingDistance+10); break;
+            case "down":  spawnY += (swingDistance+20); break;
         }
 
         swing.setRotationBasedOnDirection(dir);
         world.addObject(swing, spawnX, spawnY);
+    }
+    private void focus(){
+        if(soul>0&&health<100){//maxhealth 100, minsoul 0
+            soul--;
+            health++;
+        }
     }
     private void checkHit() {
         if (isTouching(Enemy.class)) {
@@ -253,6 +266,14 @@ public class Player extends Actor {
         }
     }
     private void applyKnockBack(){
-        
+        move(-1);
+    }
+    public void addSoul(int addSoul){
+        soul+=addSoul;
+    }
+    public void checkPogo(){
+        if(Greenfoot.isKeyDown("down")){
+            velocityY = -15;
+        }
     }
 }
