@@ -1,7 +1,7 @@
 import greenfoot.*;
 import java.util.Random;
 
-public class Player extends Actor {
+public class Player extends PhysicsObject {
     private int velocityY = 0;
     private final int gravity = 1;
     private final int jumpStrength = -11;
@@ -208,7 +208,7 @@ public class Player extends Actor {
     }
 
     private void checkGround() {
-        World world = getWorld();
+        
         Actor ground = getOneIntersectingObject(Ground.class);
 
         if (ground != null) {
@@ -221,8 +221,8 @@ public class Player extends Actor {
             onGround = false;
         }
 
-        if (getY() + getImage().getHeight() / 2 >= world.getHeight()) {
-            setLocation(getX(), world.getHeight() - getImage().getHeight() / 2);
+        if (getY() + getImage().getHeight() / 2 >= getWorld().getHeight()) {
+            setLocation(getX(), getWorld().getHeight() - getImage().getHeight() / 2);
             velocityY = 0;
             onGround = true;
         }
@@ -233,7 +233,6 @@ public class Player extends Actor {
         if (Greenfoot.isKeyDown("up")) dir = "up";
         else if (Greenfoot.isKeyDown("down") && !onGround) dir = "down";
 
-        MyWorld world = (MyWorld) getWorld();
         Swing swing = new Swing();
 
         int spawnX = getX();
@@ -247,7 +246,7 @@ public class Player extends Actor {
         }
 
         swing.setRotationBasedOnDirection(dir);
-        world.addObject(swing, spawnX, spawnY);
+        getWorld().addObject(swing, spawnX, spawnY);
     }
     private void focus(){
         if(soul>0&&health<100){//maxhealth 100, minsoul 0
