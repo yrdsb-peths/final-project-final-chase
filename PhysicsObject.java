@@ -41,6 +41,16 @@ public class PhysicsObject extends Actor {
 
     }
 
+    public void checkRoof(){
+        Actor roof = getOneIntersectingObject(Roof.class);
+        if (roof != null) {
+            while (isTouching(Ground.class)) {
+                setLocation(getX(), getY() + 1); // move out of ground
+            }
+            velocityY = 0;
+            
+        }
+    }
     public void checkWall() {
         Actor wall = getOneIntersectingObject(Wall.class);
     

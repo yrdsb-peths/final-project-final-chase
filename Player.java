@@ -40,6 +40,7 @@ public class Player extends PhysicsObject {
 
     public int health = 100;
     public int soul = 0;
+    private int focusTimer=0;
 
     public Player() {
         idleImages = new GreenfootImage[1];
@@ -77,6 +78,7 @@ public class Player extends PhysicsObject {
         applyGravity();
         checkGround();
         checkWall();
+        checkRoof();
 
         if (attackDisplayCounter > 0) {
             attackDisplayCounter--;
@@ -101,7 +103,17 @@ public class Player extends PhysicsObject {
 
     private void checkKeys() {
         if(Greenfoot.isKeyDown("a")){
-            focus();
+            focusTimer++;
+            if(focusTimer>10){
+                focus();
+            }
+        }else if(!Greenfoot.isKeyDown("a")){
+            if(focusTimer<10&&focusTimer>0){
+                if(soul>29){
+                    spawnFireBall();
+                }
+            }
+            focusTimer=0;
         }
         if (Greenfoot.isKeyDown("c") && !isDashing) {
             if (dashCooldown <= 0) {
@@ -219,7 +231,11 @@ public class Player extends PhysicsObject {
         swing.setRotationBasedOnDirection(dir);
         getWorld().addObject(swing, spawnX, spawnY);
     }
-
+    private void spawnFireBall(){
+        soul-=30;
+        MyWorld world = (MyWorld) getWorld();
+        world.spawnFireBall(directionFacing, this);
+    }
     private void focus() {
         if(soul > 0 && health < 100) {  // max health 100, min soul 0
             soul--;
@@ -248,7 +264,14 @@ public class Player extends PhysicsObject {
 
     public void checkPogo() {
         if (Greenfoot.isKeyDown("down")) {
-            setVelocityY(-15);  // Pogo jump
+            setVelocityY(-15); 
         }
     }
+    public void checkTransition(){
+        if(isTouching(Transition.class)){
+            MyWorld world = (MyWorld) getWorld();
+            world.setScreen(1);
+        }
+    }
+    
 }

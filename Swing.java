@@ -1,6 +1,6 @@
 import greenfoot.*;
 
-public class Swing extends Actor {
+public class Swing extends PlayerAttacks {
     private GreenfootImage[] frames = new GreenfootImage[3];
     private int currentFrame = 0;
     private int frameDelay = 0;

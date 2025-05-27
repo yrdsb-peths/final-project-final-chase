@@ -51,7 +51,7 @@ public class Walker extends Enemy {
             if (!chasingPlayer) {
                 x = !x; // Slow down if not chasing
             }
-            if (health <= 0) { // If health reaches 0, remove the walker
+            if (health <= 0) { // If health reaches 0 remove the walker
                 getWorld().removeObject(this);
             }
         }
@@ -66,7 +66,12 @@ public class Walker extends Enemy {
         }
 
         if (chasingPlayer && player != null) {
-            direction = (player.getX() > getX()) ? 1 : -1;
+            if (player.getX() > getX()) {
+                direction = 1;
+            } else {
+                direction = -1;
+            }
+
             move(direction * walkSpeed);
             animateRun();
             return;
@@ -137,8 +142,8 @@ public class Walker extends Enemy {
         hitFrames = 5;
         Player player = (Player) getWorld().getObjects(Player.class).get(0);
         player.checkPogo();
-        if (player != null) { // Add 20 soul when hitting the player
-            player.addSoul(10);
+        if (player != null) {
+            player.addSoul(15);
         }
     }
 }
