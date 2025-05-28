@@ -4,6 +4,7 @@ public class FireBall extends PlayerAttacks {
     int direction = 0;
     private GreenfootImage fireBall;
     boolean hit = false;
+    int frame = 5;
     public FireBall(int direction){
         fireBall = ImageUtils.scale("attacks/fireBall.png", 150, 70);
         if (direction > 0){

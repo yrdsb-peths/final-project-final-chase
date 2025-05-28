@@ -6,7 +6,6 @@ public class Player extends PhysicsObject {
     private final int jumpStrength = -11;
     private final int maxFallSpeed = 10;
     private boolean onGround = false;
-
     public String directionFacing = "left";
 
     private GreenfootImage[] idleImages;
@@ -39,7 +38,7 @@ public class Player extends PhysicsObject {
     private final int swingDistance = 50;
 
     public int health = 100;
-    public int soul = 0;
+    public int soul = 30;
     private int focusTimer=0;
 
     public Player() {
@@ -53,8 +52,9 @@ public class Player extends PhysicsObject {
         runImages[2] = ImageUtils.scale("player/run/run3.png", 37, 60);
         runImages[3] = ImageUtils.scale("player/run/run4.png", 37, 60);
 
-        attackImage = new GreenfootImage("images/player/attacks/swing3.png");
-
+        //attackImage = new GreenfootImage("images/player/attacks/swing3.png");
+        attackImage = new GreenfootImage(ImageUtils.scale("player/attacks/swing3.png", 55, 55));
+        
         dashImages = new GreenfootImage[3];
         dashImages[0] = new GreenfootImage(ImageUtils.scale("player/dash/dash1.png", 150, 50));
         dashImages[1] = new GreenfootImage(ImageUtils.scale("player/dash/dash2.png", 110, 50)); //stretchy
@@ -79,7 +79,6 @@ public class Player extends PhysicsObject {
         checkGround();
         checkWall();
         checkRoof();
-
         if (attackDisplayCounter > 0) {
             attackDisplayCounter--;
             GreenfootImage img = new GreenfootImage(attackImage);
@@ -153,7 +152,7 @@ public class Player extends PhysicsObject {
             }
         }
 
-        if (!Greenfoot.isKeyDown("space")) {
+        if (!Greenfoot.isKeyDown("space")||isTouching(Roof.class)) {
             isJumping = false;
         }
 
@@ -265,12 +264,6 @@ public class Player extends PhysicsObject {
     public void checkPogo() {
         if (Greenfoot.isKeyDown("down")) {
             setVelocityY(-15); 
-        }
-    }
-    public void checkTransition(){
-        if(isTouching(Transition.class)){
-            MyWorld world = (MyWorld) getWorld();
-            world.setScreen(1);
         }
     }
     

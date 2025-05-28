@@ -45,9 +45,9 @@ public class PhysicsObject extends Actor {
         Actor roof = getOneIntersectingObject(Roof.class);
         if (roof != null) {
             while (isTouching(Ground.class)) {
-                setLocation(getX(), getY() + 1); // move out of ground
+                setLocation(getX(), getY() + 1);
             }
-            velocityY = 0;
+            velocityY = 5;
             
         }
     }
@@ -55,7 +55,7 @@ public class PhysicsObject extends Actor {
         Actor wall = getOneIntersectingObject(Wall.class);
     
         if (wall != null) {
-            // Leeway for side collisions (left and right)
+            // Leeway for side collisions]
             if (Math.abs(getX() - wall.getX()) <= wall.getImage().getWidth() / 2 + getImage().getWidth() / 2) {
                 if (getX() < wall.getX()) {
                     // Touching the left side of the wall
