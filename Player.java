@@ -3,7 +3,7 @@ import java.util.Random;
 
 public class Player extends PhysicsObject {
     private final int gravity = 1;
-    private final int jumpStrength = -11;
+    private final int jumpStrength = -15;
     private final int maxFallSpeed = 10;
     private boolean onGround = false;
     public String directionFacing = "left";
@@ -70,7 +70,6 @@ public class Player extends PhysicsObject {
         if (isDashing) {
             dash();
             checkWall();
-            checkGround();
             return;
         }
 
@@ -139,13 +138,13 @@ public class Player extends PhysicsObject {
             isJumping = true;
             jumpTimer = 0;
             onGround = false;
-            setVelocityY(jumpStrength);  // set jump velocity
+            setVelocityY(20);  // set jump velocity
             setImage(ImageUtils.scale("player/jump.png", 40, 60));
         }
 
         if (isJumping && Greenfoot.isKeyDown("space")) {
             if (jumpTimer < maxJumpTime) {
-                setVelocityY(jumpStrength);  // continue jumping
+                setVelocityY(-14);  // continue jumping
                 jumpTimer++;
             } else {
                 isJumping = false;

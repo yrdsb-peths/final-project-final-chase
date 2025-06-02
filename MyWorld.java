@@ -20,11 +20,10 @@ public class MyWorld extends World {
         player = new Player();
         addObject(player, 815, 0);
 
-        //testWorld(); 
-        screen2();
+        screen7(); //starting screen
     }
 
-    private void testWorld() {
+    private void testWorld() {//the code for this screen is the old format 
         GreenfootImage bg = new GreenfootImage("images/backGrounds/background.jpg");
         bg.scale(getWidth(), getHeight());
         setBackground(bg);
@@ -65,8 +64,8 @@ public class MyWorld extends World {
         addObject(new Roof(150, 20), 650, 300);
         addObject(new Roof(100, 20), 950, 300);
 
-        addObject(new Transition(40, 200, 0,100,500), 1000, 400);
-        addObject(new Transition(40, 500, 2,950,300), 0, 300);
+        addObject(new Transition(40, 200, 0,100,400), 1000, 400);
+        addObject(new Transition(40, 500, 2,900,300), 0, 300);
     }
 
     private void screen2() {
@@ -83,14 +82,82 @@ public class MyWorld extends World {
         addObject(new Wall(50, 150), 315, 450);
         addObject(new Wall(50, 150), 760, 395);
         addObject(new Wall(50, 50), 710, 470);
-        addObject(new Wall(50, 250), 280, 140);
+        addObject(new Wall(50, 250), 280, 120);
         
         addObject(new Roof(300, 50), 150, 250);
+        addObject(new Roof(190, 50), 515, 340);
+        
+        addObject(new Walker(), 400, 470);
 
-
+        addObject(new Transition(50, 1000, 1,100,480), 1000, 300);
+        addObject(new Transition(50, 1000, 3,950,50), 0, 300);
 
     }
+    
+    private void screen3(){
+        GreenfootImage bg = new GreenfootImage("images/backgrounds/screen3.png");
+        bg.scale(getWidth(), getHeight());
+        setBackground(bg);
 
+        addObject(new Ground(560, 50), 500, 340);
+        addObject(new Ground(100, 50), 990, 200);
+        addObject(new Ground(100, 50), 30, 200);
+        addObject(new Ground(120, 50), 910 , 520);
+        addObject(new Ground(120, 50), 80 , 520);
+
+        addObject(new Transition(10, 200, 2,100,350), 1000, 100);
+        addObject(new Transition(1000, 10, 4,100,350), 500, 550);
+    }
+    
+    public void screen4(){
+        GreenfootImage bg = new GreenfootImage("images/backgrounds/screen4.png");
+        bg.scale(getWidth(), getHeight());
+        setBackground(bg);
+        addObject(new Transition(1000, 10, 5,500,0), 500, 550);
+        addObject(new Ground(500, 50), 770, 480);
+        addObject(new Ground(500, 50), 120, 480);
+        addObject(new Ground(220, 25), 660, 180);
+        addObject(new Ground(220, 25), 390, 205);
+        addObject(new Ground(150, 25), 930, 335);
+        addObject(new Ground(150, 25), 100, 270);
+    }
+    
+    public void screen5(){
+        GreenfootImage bg = new GreenfootImage("images/backgrounds/screen5.png");
+        bg.scale(getWidth(), getHeight());
+        setBackground(bg);
+        addObject(new Transition(1000, 10, 6,450,0), 500, 550);
+        addObject(new Ground(400, 25), 420, 135);
+        addObject(new Ground(400, 25), 530, 200);
+        addObject(new Ground(50, 25), 900, 325);
+        addObject(new Ground(50, 25), 750, 420);
+        addObject(new Ground(80, 25), 816, 553);
+    }
+    
+    public void screen6(){
+        GreenfootImage bg = new GreenfootImage("images/backgrounds/screen6.png");
+        bg.scale(getWidth(), getHeight());
+        setBackground(bg);
+        addObject(new Transition(25, 200, 7,100,350), 600, 475);
+        addObject(new Ground(80, 25), 409, 390);
+        addObject(new Ground(200, 25), 524, 558);
+        addObject(new Wall(25, 200), 447, 490);
+        addObject(new Wall(25, 800), 378, 257);
+        addObject(new Wall(25, 400), 558, 218);
+        addObject(new Wall(25, 200), 522, 117);
+    }
+    
+    public void screen7(){
+        GreenfootImage bg = new GreenfootImage("images/backgrounds/screen7.png");
+        bg.scale(getWidth(), getHeight());
+        setBackground(bg);
+        addObject(new Transition(25, 200, 7,100,350), 950, 450);
+        addObject(new Ground(500, 25), 808, 518);
+        addObject(new Ground(150, 25), 476, 454);
+        addObject(new Ground(150, 25), 333, 556);
+        addObject(new Ground(200, 25), 83, 388);
+    }
+    
     public void spawnSwing(String direction, Player player) {
         Swing swing = new Swing();
         int x = player.getX();
@@ -105,7 +172,7 @@ public class MyWorld extends World {
         swing.setRotationBasedOnDirection(direction);
         addObject(swing, x, y);
     }
-
+    
     public void spawnFireBall(String direction, Player player) {
         int dir = 0;
         int x = player.getX();
@@ -132,18 +199,22 @@ public class MyWorld extends World {
     public void setScreen(int inputScreen, int playerX, int playerY) {
         clearScreen();
     
-        if (inputScreen == 0) {
-            testWorld();
-        } else if (inputScreen == 1) {
-            screen1();
-        } else if (inputScreen == 2) {
-            screen2();
-        } else {
-            testWorld(); // default
+        // Condensed version using a switch expression
+        switch (inputScreen) {
+            case 0 -> testWorld();
+            case 1 -> screen1();
+            case 2 -> screen2();
+            case 3 -> screen3();
+            case 4 -> screen4();
+            case 5 -> screen5();
+            case 6 -> screen6();
+            case 7 -> screen7();
+            default -> testWorld(); // Default case if the inputScreen is not recognized
         }
     
         player.setLocation(playerX, playerY);
     }
+
 
 
     public void clearScreen() { //remove previous screen, except player and ui
