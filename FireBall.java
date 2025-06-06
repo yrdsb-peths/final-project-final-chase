@@ -23,7 +23,7 @@ public class FireBall extends PlayerAttacks {
     }
 
     private void checkWalls() {
-        if (isAtEdge()) {
+        if (getX()<10||getX()>990) {
             World world = getWorld();
             if (world != null) {
                 world.removeObject(this);
@@ -41,6 +41,10 @@ public class FireBall extends PlayerAttacks {
                 if (enemy instanceof Walker) {  // Check if the enemy is a Walker
                     Walker walker = (Walker) enemy; // Cast to Walker
                     walker.decreaseHealth(30);  // Decrease health by 4
+                }
+                if (enemy instanceof Aspid) {  // Check if the enemy is a Walker
+                    Aspid aspid = (Aspid) enemy; // Cast to Walker
+                    aspid.decreaseHealth(30);  // Decrease health by 4
                 }
             }
             hit = true;

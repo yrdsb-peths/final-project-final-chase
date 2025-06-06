@@ -20,7 +20,7 @@ public class MyWorld extends World {
         player = new Player();
         addObject(player, 815, 100);
 
-        testWorld(); //starting screen
+        screen11(); //starting screen
     }
 
     private void testWorld() {//the code for this screen is the old format 
@@ -44,6 +44,7 @@ public class MyWorld extends World {
         addObject(new Walker(), 700, 500);
         addObject(new Walker(), 500, 420);
         
+        addObject(new Aspid(), 700, 200);
 
         addObject(new Transition(40, 120, 1,900,400), 5, 360);
     }
@@ -89,6 +90,7 @@ public class MyWorld extends World {
         addObject(new Roof(190, 50), 515, 340);
         
         addObject(new Walker(), 400, 470);
+        addObject(new Aspid(), 400, 150);
 
         addObject(new Transition(50, 1000, 1,100,480), 1000, 300);
         addObject(new Transition(50, 1000, 3,950,50), 0, 300);
@@ -115,6 +117,8 @@ public class MyWorld extends World {
 
         addObject(new Transition(10, 200, 2,100,350), 1000, 100);
         addObject(new Transition(1000, 10, 4,500,50), 500, 550);
+        
+        addObject(new Aspid(), 400, 150);
     }
     
     public void screen4(){
@@ -136,7 +140,8 @@ public class MyWorld extends World {
         addObject(new Roof(220, 25), 660, 25);
         addObject(new Wall(25, 100), 525, 521);
         addObject(new Wall(25, 100), 365, 521);
-
+        
+        addObject(new Walker(), 227, 420);
     }
     
     public void screen5(){
@@ -159,6 +164,7 @@ public class MyWorld extends World {
         addObject(new Roof(400, 25), 200, 30);
         addObject(new Roof(400, 25), 800, 30);
         
+        addObject(new Aspid(), 827, 314);
     }
     
     public void screen6(){
@@ -189,7 +195,7 @@ public class MyWorld extends World {
         addObject(new Ground(100, 10), 642, 348); 
         addObject(new Ground(80, 10), 360, 280); 
         addObject(new Ground(80, 10), 190, 144); 
-        addObject(new Wall(10, 200), 76, 141); 
+        addObject(new Wall(10, 300), 76, 91); 
         addObject(new Wall(25, 200), 405, 545); 
         addObject(new Wall(25, 200), 545, 545); 
         addObject(new Wall(10, 400), 873, 180); 
@@ -202,6 +208,10 @@ public class MyWorld extends World {
         addObject(new Roof(80, 10), 38, 242); 
         addObject(new Roof(80, 10), 912, 380); 
 
+        addObject(new Aspid(), 700, 100);
+        addObject(new Aspid(), 774, 420);
+        addObject(new Aspid(), 313, 172);
+        addObject(new Walker(), 360, 490);
     }
     
     public void screen8(){
@@ -263,7 +273,7 @@ public class MyWorld extends World {
         addObject(new Roof(100, 10), 745, 277);
         
         addObject(new Transition(25, 200, 10,900,400), 22, 86);
-        addObject(new Transition(1000, 10, 8,50,200), 500, 600);
+        addObject(new Transition(1000, 10, 8,773,112), 500, 600);
     }
     
     public void screen10(){
@@ -284,6 +294,7 @@ public class MyWorld extends World {
         
         addObject(new Transition(25, 200, 11,900,500), 0, 250);
         addObject(new Transition(25, 200, 9,100,88), 1000, 362);
+        addObject(new Walker(), 340, 362);
     }
     
     void screen11(){
@@ -295,7 +306,8 @@ public class MyWorld extends World {
         addObject(new Wall(10, 500), 58, 262);
         addObject(new Wall(10, 500), 938, 172);
         addObject(new Roof(100, 10), 986, 421);
-        addObject(new Transition(25, 200, 10,100,280), 1000, 500);        
+        addObject(new Transition(25, 200, 10,100,280), 1000, 500); 
+        addObject(new FalseKnight(), 340, 362);
     }
     
     public void spawnSwing(String direction, Player player) {
@@ -359,7 +371,9 @@ public class MyWorld extends World {
         player.setLocation(playerX, playerY);
     }
 
-
+    public void spawnBullet(int x,int y){
+        addObject(new AspidBullet(), x,y);
+    }
 
     public void clearScreen() { //remove previous screen, except player and ui
         List<Actor> actors = getObjects(null);

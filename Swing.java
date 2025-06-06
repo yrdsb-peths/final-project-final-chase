@@ -42,6 +42,14 @@ public class Swing extends PlayerAttacks {
                     Walker walker = (Walker) enemy; // Cast to Walker
                     walker.decreaseHealth(4);  // Decrease health by 4
                 }
+                if (enemy instanceof Aspid) {  // Check if the enemy is a Walker
+                    Aspid aspid = (Aspid) enemy; // Cast to Walker
+                    aspid.decreaseHealth(4);  // Decrease health by 4
+                }
+                if (enemy instanceof AspidBullet) {  // Check if the enemy is a Walker
+                    AspidBullet aspidBullet = (AspidBullet) enemy; // Cast to Walker
+                    aspidBullet.decreaseHealth(4);  // Decrease health by 4
+                }
             }
             
             // Increase score as previously
