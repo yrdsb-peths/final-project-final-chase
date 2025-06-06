@@ -11,7 +11,7 @@ public class Transition extends WorldBlocks {
         spawnY = playerY;
 
         GreenfootImage img = new GreenfootImage(width, height);
-        img.setColor(new Color(255, 50, 255, 50));  // semi-transparent purple
+        img.setColor(new Color(255, 50, 255, 100));  // semi-transparent purple
         img.fill();
         setImage(img);
     }
