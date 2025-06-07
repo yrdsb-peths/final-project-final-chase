@@ -16,4 +16,10 @@ public class FalseKnightHurtBox extends Enemy {
             setLocation(target.getX(), target.getY());
         }
     }
+    public void takeDamage(int amount) {
+        if (target != null) {
+            target.decreaseHealth(amount);
+        }
+    }
+
 }

@@ -102,11 +102,11 @@ public class Player extends PhysicsObject {
     private void checkKeys() {
         if(Greenfoot.isKeyDown("a")){
             focusTimer++;
-            if(focusTimer>10){
+            if(focusTimer>20){
                 focus();
             }
         }else if(!Greenfoot.isKeyDown("a")){
-            if(focusTimer<10&&focusTimer>0){
+            if(focusTimer<20&&focusTimer>0){
                 if(soul>29){
                     spawnFireBall();
                 }
@@ -269,4 +269,7 @@ public class Player extends PhysicsObject {
         }
     }
     
+    public int getHealth(){
+        return health;
+    }
 }

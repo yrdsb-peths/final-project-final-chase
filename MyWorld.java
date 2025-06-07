@@ -19,6 +19,8 @@ public class MyWorld extends World {
 
         player = new Player();
         addObject(player, 815, 100);
+        
+        
 
         screen11(); //starting screen
     }

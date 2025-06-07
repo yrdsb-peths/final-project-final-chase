@@ -3,7 +3,7 @@ import java.util.Random;
 import java.util.List;
 
 public class FalseKnight extends PhysicsObject {
-    int health;
+    int health = 200;
     int hitFrames;
     
     // Animation frames
@@ -11,7 +11,9 @@ public class FalseKnight extends PhysicsObject {
     private GreenfootImage[] attackImages;
     private GreenfootImage[] jumpImages;
     private GreenfootImage hitImage;
-
+    private GreenfootImage[] staggerImages;
+    private GreenfootImage[] unstaggerImages;
+    
     // Frame counters
     private int idleFrame = 0;
     private int swingFrame = 0;
@@ -35,11 +37,11 @@ public class FalseKnight extends PhysicsObject {
     private Random rand = new Random();
 
     //Horizontal speed midair
-    private static final int MIDAIR_HORIZONTAL_SPEED = 3;
+    private static final int MIDAIR_HORIZONTAL_SPEED = 5;
 
     //-1 for left, 1 for right
     private int midairDirection = 0;
-
+    
     public FalseKnight() {
         loadAnimations();
         setImage(idleImages[0]);
@@ -49,7 +51,18 @@ public class FalseKnight extends PhysicsObject {
         idleImages = new GreenfootImage[3];
         attackImages = new GreenfootImage[4];
         jumpImages = new GreenfootImage[5];
+        staggerImages = new GreenfootImage[5];
+        unstaggerImages= new GreenfootImage[2];
 
+        
+        staggerImages[0] = ImageUtils.scale("enemies/falseKnight/stagger1.png", 450, 225);
+        staggerImages[1] = ImageUtils.scale("enemies/falseKnight/stagger2.png", 450, 225);
+        staggerImages[2] = ImageUtils.scale("enemies/falseKnight/stagger3.png", 450, 225);
+        staggerImages[3] = ImageUtils.scale("enemies/falseKnight/stagger4.png", 450, 225);
+        staggerImages[4] = ImageUtils.scale("enemies/falseKnight/stagger5.png", 450, 225);
+        
+        unstaggerImages[0] = ImageUtils.scale("enemies/falseKnight/unstagger1.png", 450, 225);
+        unstaggerImages[1] = ImageUtils.scale("enemies/falseKnight/unstagger2.png", 450, 225);
         
         idleImages[0] = ImageUtils.scale("enemies/falseKnight/idle1.png", 450, 225);
         idleImages[1] = ImageUtils.scale("enemies/falseKnight/idle2.png", 450, 225);
@@ -72,6 +85,27 @@ public class FalseKnight extends PhysicsObject {
     }
 
     public void act() {
+        if (hitFrames > 0) {
+            setImage(hitImage);
+            hitFrames--;
+            
+            if (health <= 0 && hitFrames == 0) {
+                World world = getWorld();
+                
+                if (world != null) {
+                    world.removeObject(this);
+                    
+                    List<FalseKnightHurtBox> boxes = world.getObjects(FalseKnightHurtBox.class);
+                    
+                    for (int i = 0; i < boxes.size(); i++) {
+                        world.removeObject(boxes.get(i));
+                    }
+                }
+            }
+
+
+            return;
+        }
         mainFrame++;
         applyGravity();
         checkGround();
@@ -94,7 +128,7 @@ public class FalseKnight extends PhysicsObject {
         } else {
             animateIdle();
 
-            if (mainFrame % 180 == 0) {
+            if (mainFrame % health/10 == 0) {
                 doRandomAction();
             }
         }
@@ -271,5 +305,11 @@ public class FalseKnight extends PhysicsObject {
             player.checkPogo();
             player.addSoul(15);
         }
+    }
+    public void stagger(){
+        
+    }
+    public void unstagger(){
+        
     }
 }
