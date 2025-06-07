@@ -47,7 +47,7 @@ public class PhysicsObject extends Actor {
             while (isTouching(Ground.class)) {
                 setLocation(getX(), getY() + 1);
             }
-            velocityY = 5;
+            velocityY = 2;
             
         }
     }

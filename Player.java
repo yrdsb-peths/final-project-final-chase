@@ -245,10 +245,13 @@ public class Player extends PhysicsObject {
         if (isTouching(Enemy.class)) {
             // Decrease health when the player touches an enemy
             health--;
-
-            // Get the world and update the score (which also updates the score label)
+            Enemy enemy = (Enemy) getOneIntersectingObject(Enemy.class);
             MyWorld world = (MyWorld) getWorld();
-            world.setScore(health);  // Pass the updated health to the world
+            world.setScore(health); 
+            
+            if (enemy instanceof AspidBullet) {  //aspid bullets do extra damage
+                health-=2;
+            }
         }
     }
 

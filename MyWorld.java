@@ -307,7 +307,10 @@ public class MyWorld extends World {
         addObject(new Wall(10, 500), 938, 172);
         addObject(new Roof(100, 10), 986, 421);
         addObject(new Transition(25, 200, 10,100,280), 1000, 500); 
-        addObject(new FalseKnight(), 340, 362);
+        FalseKnight knight = new FalseKnight();
+        addObject(knight, 340, 362);
+        addObject(new FalseKnightHurtBox(knight), 340, 362);
+
     }
     
     public void spawnSwing(String direction, Player player) {
@@ -374,6 +377,9 @@ public class MyWorld extends World {
     public void spawnBullet(int x,int y){
         addObject(new AspidBullet(), x,y);
     }
+    public Player getPlayer() {
+        return player;
+    }
 
     public void clearScreen() { //remove previous screen, except player and ui
         List<Actor> actors = getObjects(null);
@@ -382,5 +388,8 @@ public class MyWorld extends World {
                 removeObject(actor);
             }
         }
+    }
+    public void spawnWave(int direction,int x , int y){
+        addObject(new FalseKnightWave(direction), x,y);
     }
 }
