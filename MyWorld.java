@@ -1,5 +1,6 @@
 import greenfoot.*;
 import java.util.List;
+import java.util.Random;
 
 public class MyWorld extends World {
     Swing objectA = new Swing();
@@ -7,10 +8,73 @@ public class MyWorld extends World {
     Label scoreLabel;
     Label soulLabel;
     Player player; // Declare player as a field
-
+    ScreenDim screenDim;
+    boolean FKDead = false;
+    private GreenfootSound bossMusic;
+    private GreenfootSound crossroads;
+    public int MVolume = 5;
+    Label controlsLabel;
+    Label MVolumeLabel;
+    Label startMenuLabel;
     public MyWorld() {
         super(1000, 600, 1);
+        bossMusic = new GreenfootSound("Boss Battle 1.mp3");
+        bossMusic.setVolume(MVolume*10);
+        crossroads = new GreenfootSound("crossroads.mp3");
+        crossroads.setVolume(MVolume*10);
+        startMenu();
+        //startGame();
+    }
 
+    public void startMenu(){
+        GreenfootImage bg = new GreenfootImage("images/menu/startMenu.png");
+        bg.scale(getWidth(), getHeight());
+        setBackground(bg);
+        startMenuLabel = new Label("Start Game\nSettings/Controls", 50);
+        addObject(startMenuLabel, 500,375);
+        addObject(new MenuButton(200, 50,0), 500, 350);//start
+        addObject(new MenuButton(315, 50,1), 500, 400);//settings
+    }
+    public void controls() {
+        GreenfootImage bg = new GreenfootImage("images/menu/blankMenuBacking.png");
+        bg.scale(getWidth(), getHeight());
+        setBackground(bg);
+    
+        String controlText = 
+            "Controls:\n" +
+            "Arrow Keys - Move/Aim sword\n" +
+            "Space - Jump\n" +
+            "X - Attack (Melee)\n" +
+            "Tap A - Shoot Fireball\n" +
+            "Hold A - Focus (Heal)\n" +
+            "C - Dash (Dashing gives you invincibility)";
+    
+        Label controlLabel = new Label(controlText, 30);
+        addObject(controlLabel, getWidth() / 2, getHeight() / 2 - 50);
+    
+        // Add "Back" button below controls
+        Label backButton = new Label("Back", 50);
+        addObject(backButton, 500, 500);
+        addObject(new MenuButton(150, 50, 4), 500, 500); // backButton
+    }
+
+    public void settings(){
+        controlsLabel = new Label("View Controls", 50);
+        addObject(controlsLabel,500,160);
+        addObject(new MenuButton(150, 50,2), 500, 160);//controlsButton
+        MVolumeLabel = new Label("Music Volume: " + MVolume, 50);
+        addObject(MVolumeLabel,500,210);
+        addObject(new MenuButton(150, 50,3), 500, 210);//MVolume
+        Label backButton = new Label("Back", 50);
+        addObject(backButton,500,260);
+        addObject(new MenuButton(150, 50,4), 500, 260);//backButton
+        GreenfootImage bg = new GreenfootImage("images/menu/blankMenuBacking.png");
+        bg.scale(getWidth(), getHeight());
+        setBackground(bg);
+    }
+    public void startGame(){
+        crossroads.playLoop();
+        clearScreen();
         scoreLabel = new Label(score, 80);
         addObject(scoreLabel, 200, 50);
 
@@ -20,11 +84,12 @@ public class MyWorld extends World {
         player = new Player();
         addObject(player, 815, 100);
         
+        screenDim = new ScreenDim(player);
+        addObject(screenDim,500,300);
         
-
         screen11(); //starting screen
     }
-
+    
     private void testWorld() {//the code for this screen is the old format 
         GreenfootImage bg = new GreenfootImage("images/backGrounds/background.jpg");
         bg.scale(getWidth(), getHeight());
@@ -51,7 +116,7 @@ public class MyWorld extends World {
         addObject(new Transition(40, 120, 1,900,400), 5, 360);
     }
 
-    private void screen1() {//starting room
+    public void screen1() {//starting room
         GreenfootImage bg = new GreenfootImage("images/backgrounds/screen1.png");
         bg.scale(getWidth(), getHeight());
         setBackground(bg);
@@ -243,6 +308,8 @@ public class MyWorld extends World {
         
         addObject(new Transition(200, 25, 9,560,400), 731, 45);
         addObject(new Transition(25, 200, 7,850,500), 5, 350);
+        
+        addObject(new Walker(), 390, 422);
     }
     
     public void screen9(){
@@ -276,6 +343,7 @@ public class MyWorld extends World {
         
         addObject(new Transition(25, 200, 10,900,400), 22, 86);
         addObject(new Transition(1000, 10, 8,773,112), 500, 600);
+        addObject(new Aspid(), 343, 450);
     }
     
     public void screen10(){
@@ -297,6 +365,8 @@ public class MyWorld extends World {
         addObject(new Transition(25, 200, 11,900,500), 0, 250);
         addObject(new Transition(25, 200, 9,100,88), 1000, 362);
         addObject(new Walker(), 340, 362);
+        bossMusic.stop();
+        crossroads.playLoop();
     }
     
     void screen11(){
@@ -304,14 +374,18 @@ public class MyWorld extends World {
         bg.scale(getWidth(), getHeight());
         setBackground(bg);
         
+        crossroads.pause();
         addObject(new Ground(1000, 10), 500, 521);
         addObject(new Wall(10, 500), 58, 262);
         addObject(new Wall(10, 500), 938, 172);
         addObject(new Roof(100, 10), 986, 421);
         addObject(new Transition(25, 200, 10,100,280), 1000, 500); 
-        FalseKnight knight = new FalseKnight();
-        addObject(knight, 340, 362);
-        addObject(new FalseKnightHurtBox(knight), 340, 362);
+        if(!FKDead){
+            bossMusic.playLoop();
+            FalseKnight knight = new FalseKnight();
+            addObject(knight, 340, 362);
+            addObject(new FalseKnightHurtBox(knight), 340, 362);
+        }
 
     }
     
@@ -386,12 +460,36 @@ public class MyWorld extends World {
     public void clearScreen() { //remove previous screen, except player and ui
         List<Actor> actors = getObjects(null);
         for (Actor actor : actors) {
-            if (actor != scoreLabel && actor != soulLabel && actor != player) {
+            if (actor != scoreLabel && actor != soulLabel && actor != player && actor != screenDim) {
                 removeObject(actor);
             }
+        }
+    }
+    public void clearAll() { //remove EVERTYTHING
+        List<Actor> actors = getObjects(null);
+        for (Actor actor : actors) {
+            removeObject(actor);
         }
     }
     public void spawnWave(int direction,int x , int y){
         addObject(new FalseKnightWave(direction), x,y);
     }
+    public void killedFK(){
+        FKDead = true;
+        bossMusic.stop();
+    }
+    public int getMV(){
+        return MVolume;
+    }
+    public void setMV(int input){
+        MVolume = input;
+        MVolumeLabel.setValue("Music Volume: " + MVolume);
+        crossroads.setVolume(MVolume*10);
+        bossMusic.setVolume(MVolume*10);
+    }
+    public void spawnRock() {
+        int x = Greenfoot.getRandomNumber(901) + 50; // Random value from 50 to 950
+        addObject(new Rock(), x, 0);
+    }
+
 }

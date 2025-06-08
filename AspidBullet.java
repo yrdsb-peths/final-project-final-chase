@@ -67,7 +67,7 @@ public class AspidBullet extends Enemy
         Player player = (Player) getWorld().getObjects(Player.class).get(0);
         player.checkPogo();
         if (player != null) {
-            player.addSoul(15);
+            player.addSoul(1);
         }
     }
 }

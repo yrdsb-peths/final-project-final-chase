@@ -5,7 +5,12 @@ public class FireBall extends PlayerAttacks {
     private GreenfootImage fireBall;
     boolean hit = false;
     int frame = 5;
+    public GreenfootSound damageSound;
+    private GreenfootSound fireBallSound;
+
     public FireBall(int direction){
+        fireBallSound = new GreenfootSound("hero_fireball.mp3");
+        damageSound = new GreenfootSound("enemy_damage.mp3");
         fireBall = ImageUtils.scale("attacks/fireBall.png", 150, 70);
         if (direction > 0){
             setImage(fireBall);
@@ -14,6 +19,7 @@ public class FireBall extends PlayerAttacks {
             setImage(fireBall);
         }
         this.direction = direction;
+        fireBallSound.play();
     }
 
     public void act() {
@@ -38,6 +44,7 @@ public class FireBall extends PlayerAttacks {
             
             if (enemy != null) {
                 // Reduce the health of the touched enemy
+                damageSound.play();
                 if (enemy instanceof Walker) {  // Check if the enemy is a Walker
                     Walker walker = (Walker) enemy; // Cast to Walker
                     walker.decreaseHealth(30);  // Decrease health by 4
@@ -46,8 +53,11 @@ public class FireBall extends PlayerAttacks {
                     Aspid aspid = (Aspid) enemy; // Cast to Walker
                     aspid.decreaseHealth(30);  // Decrease health by 4
                 }
+                if (enemy instanceof FalseKnightHurtBox) {
+                        ((FalseKnightHurtBox) enemy).takeDamage(10);
+                }
+                hit = true;
             }
-            hit = true;
         }
     }
 }

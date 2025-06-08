@@ -6,7 +6,7 @@ public class FalseKnightHurtBox extends Enemy {
     public FalseKnightHurtBox(FalseKnight target) {
         this.target = target;
         GreenfootImage img = new GreenfootImage(150, 150);
-        img.setColor(new Color(255, 255, 50, 10));
+        img.setColor(new Color(255, 255, 50, 0));
         img.fill();
         setImage(img);
     }

@@ -39,25 +39,51 @@ public class Player extends PhysicsObject {
 
     public int health = 100;
     public int soul = 30;
-    private int focusTimer=0;
+    private int focusTimer = 0;
+
+    private GreenfootSound dashSound;
+    private GreenfootSound footstepsSound;
+    private GreenfootSound focusStart;
+    private GreenfootSound focus;
+
+    private GreenfootImage[] deathImages;
+    int deathFrames = 0;
+    boolean isDead = false;
+    
+    private GreenfootSound death;
+    int FXVolume;
+    
+    private boolean volumeInitialized = false;
 
     public Player() {
+        death = new GreenfootSound("hero_death.mp3");
+        deathImages = new GreenfootImage[6];
+        deathImages[0] = new GreenfootImage(ImageUtils.scale("player/death/death1.png", 37, 60));
+        deathImages[1] = new GreenfootImage(ImageUtils.scale("player/death/death2.png", 37, 60));
+        deathImages[2] = new GreenfootImage(ImageUtils.scale("player/death/death3.png", 37, 60));
+        deathImages[3] = new GreenfootImage(ImageUtils.scale("player/death/death4.png", 37, 60));
+        deathImages[4] = new GreenfootImage(ImageUtils.scale("player/death/death5.png", 37, 60));
+        deathImages[5] = new GreenfootImage(ImageUtils.scale("player/death/death6.png", 37, 60));
+        
+        focus = new GreenfootSound("focus_health_charging.mp3");
+        focusStart = new GreenfootSound("focus_ready.mp3");
+        dashSound = new GreenfootSound("dash.mp3");
+        footstepsSound = new GreenfootSound("footsteps.mp3");  // Initialize footsteps sound
+
         idleImages = new GreenfootImage[1];
         idleImages[0] = ImageUtils.scale("player/idle.png", 30, 60);
 
         runImages = new GreenfootImage[4];
-
         runImages[0] = ImageUtils.scale("player/run/run1.png", 37, 60);
         runImages[1] = ImageUtils.scale("player/run/run2.png", 37, 60);
         runImages[2] = ImageUtils.scale("player/run/run3.png", 37, 60);
         runImages[3] = ImageUtils.scale("player/run/run4.png", 37, 60);
 
-        //attackImage = new GreenfootImage("images/player/attacks/swing3.png");
         attackImage = new GreenfootImage(ImageUtils.scale("player/attacks/swing3.png", 55, 55));
-        
+
         dashImages = new GreenfootImage[3];
         dashImages[0] = new GreenfootImage(ImageUtils.scale("player/dash/dash1.png", 150, 50));
-        dashImages[1] = new GreenfootImage(ImageUtils.scale("player/dash/dash2.png", 110, 50)); //stretchy
+        dashImages[1] = new GreenfootImage(ImageUtils.scale("player/dash/dash2.png", 110, 50)); // stretchy
         dashImages[2] = new GreenfootImage(ImageUtils.scale("player/dash/dash3.png", 80, 50));
         dashImage = dashImages[0];
 
@@ -67,59 +93,94 @@ public class Player extends PhysicsObject {
     }
 
     public void act() {
-        if (isDashing) {
-            dash();
-            checkWall();
-            return;
-        }
-
-        checkKeys();
-        applyGravity();
-        checkGround();
-        checkWall();
-        checkRoof();
-        if (attackDisplayCounter > 0) {
-            attackDisplayCounter--;
-            GreenfootImage img = new GreenfootImage(attackImage);
-            if (directionFacing.equals("left")) img.mirrorHorizontally();
-            setImage(img);
-        } else {
-            animateRunOrIdle();
-        }
-
-        if (swingCooldown > 0) {
-            swingCooldown--;
-        }
-        if (dashCooldown > 0) {
-            dashCooldown--;
-        }
-        checkHit();
-        MyWorld world = (MyWorld) getWorld();
-        world.setScore(health);
-        world.setSoul(soul);
-    }
-
-    private void checkKeys() {
-        if(Greenfoot.isKeyDown("a")){
-            focusTimer++;
-            if(focusTimer>20){
-                focus();
+        if(!isDead){
+            if (isDashing) {
+                dash();
+                checkWall();
+                return;
             }
-        }else if(!Greenfoot.isKeyDown("a")){
-            if(focusTimer<20&&focusTimer>0){
-                if(soul>29){
+    
+            checkKeys();
+            applyGravity();
+            checkGround();
+            checkWall();
+            checkRoof();
+            
+            if (attackDisplayCounter > 0) {
+                attackDisplayCounter--;
+                GreenfootImage img = new GreenfootImage(attackImage);
+                if (directionFacing.equals("left")) img.mirrorHorizontally();
+                setImage(img);
+            } else {
+                animateRunOrIdle();
+            }
+    
+            if (swingCooldown > 0) {
+                swingCooldown--;
+            }
+            if (dashCooldown > 0) {
+                dashCooldown--;
+            }
+            checkHit();
+            MyWorld world = (MyWorld) getWorld();
+            world.setScore(health);
+            world.setSoul(soul);
+            if(health<1){
+                death.play();
+                isDead = true;
+            }
+        } else{
+            MyWorld world = (MyWorld) getWorld();
+            die();
+            if(Greenfoot.isKeyDown("space")){
+                world.clearScreen();
+                world.screen1();
+                health = 100;
+                soul = 30;
+                isDead = false;
+            }
+            if(Greenfoot.isKeyDown("shift")){
+                world.clearAll();
+                world.startMenu();
+            }
+        }
+    }
+    
+    private void checkKeys() {
+        if (Greenfoot.isKeyDown("a")) {
+            focusStart.play();
+            focusTimer++;
+            if (focusTimer > 20) {
+                focus();
+            }else{
+                focus.stop(); //the sound 
+            }
+        } else if (!Greenfoot.isKeyDown("a")) {
+            if (focusTimer < 20 && focusTimer > 0) {
+                if (soul > 29) {
                     spawnFireBall();
                 }
             }
-            focusTimer=0;
+            focusTimer = 0;
         }
         if (Greenfoot.isKeyDown("c") && !isDashing) {
             if (dashCooldown <= 0) {
                 isDashing = true;
                 dashTimer = dashDuration;
                 swingSpawned = false;
-                dashCooldown = 20;  // cooldown set here before return
+                dashCooldown = 20;
+                dashSound.play();
                 return;
+            }
+        }
+
+        if ((Greenfoot.isKeyDown("left") || Greenfoot.isKeyDown("right"))&& velocityY < 2) {//stupidest possible way to check this
+            if (!footstepsSound.isPlaying()) {
+                footstepsSound.playLoop();
+            }
+        } else {
+            if (footstepsSound.isPlaying()) {
+                footstepsSound.stop();
             }
         }
 
@@ -151,7 +212,7 @@ public class Player extends PhysicsObject {
             }
         }
 
-        if (!Greenfoot.isKeyDown("space")||isTouching(Roof.class)) {
+        if (!Greenfoot.isKeyDown("space") || isTouching(Roof.class)) {
             isJumping = false;
         }
 
@@ -220,24 +281,29 @@ public class Player extends PhysicsObject {
         int spawnY = getY();
 
         switch (dir) {
-            case "right": spawnX += swingDistance; break; //swingDistance=40
+            case "right": spawnX += swingDistance; break; // swingDistance = 40
             case "left":  spawnX -= swingDistance; break;
-            case "up":    spawnY -= (swingDistance+10); break;
-            case "down":  spawnY += (swingDistance+20); break;
+            case "up":    spawnY -= (swingDistance + 10); break;
+            case "down":  spawnY += (swingDistance + 20); break;
         }
 
         swing.setRotationBasedOnDirection(dir);
         getWorld().addObject(swing, spawnX, spawnY);
     }
-    private void spawnFireBall(){
-        soul-=30;
+
+    private void spawnFireBall() {
+        soul -= 30;
         MyWorld world = (MyWorld) getWorld();
         world.spawnFireBall(directionFacing, this);
     }
+
     private void focus() {
-        if(soul > 0 && health < 100) {  // max health 100, min soul 0
+        if (soul > 0 && health < 100) {  // max health 100, min soul 0
+            focus.playLoop();
             soul--;
             health++;
+        }else{
+            focus.stop();
         }
     }
 
@@ -247,10 +313,10 @@ public class Player extends PhysicsObject {
             health--;
             Enemy enemy = (Enemy) getOneIntersectingObject(Enemy.class);
             MyWorld world = (MyWorld) getWorld();
-            world.setScore(health); 
-            
-            if (enemy instanceof AspidBullet) {  //aspid bullets do extra damage
-                health-=2;
+            world.setScore(health);
+
+            if (enemy instanceof AspidBullet) {  // aspid bullets do extra damage
+                health -= 2;
             }
         }
     }
@@ -265,11 +331,17 @@ public class Player extends PhysicsObject {
 
     public void checkPogo() {
         if (Greenfoot.isKeyDown("down")) {
-            setVelocityY(-15); 
+            setVelocityY(-15);
         }
     }
-    
-    public int getHealth(){
+
+    public int getHealth() {
         return health;
+    }
+    public void die(){
+        if(deathFrames<79){
+            deathFrames++;
+        }
+        setImage(deathImages[deathFrames/20]);
     }
 }

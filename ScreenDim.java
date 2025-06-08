@@ -1,19 +1,29 @@
-import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+import greenfoot.*;  
 
-/**
- * Write a description of class ScreenDim here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
- */
 public class ScreenDim extends Actor
 {
-    /**
-     * Act - do whatever the ScreenDim wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
-     */
+    public GreenfootImage vignette;
+    Player player;  
+    int playerHealth;
+    int transparency;
+    public ScreenDim(Player player){
+        this.player = player;  
+        vignette = ImageUtils.scale("Vignette.png", 1000, 600);
+        vignette.setTransparency(0);
+        setImage(vignette);
+    }
+
     public void act()
     {
-        // Add your action code here.
+        if (player != null) {  
+            playerHealth = player.getHealth();
+            transparency = 255-(playerHealth*2);
+            if (transparency<0){
+                transparency = 0;
+            } else if(transparency>255){
+                transparency = 255;
+            }
+            vignette.setTransparency(transparency);
+        }
     }
 }

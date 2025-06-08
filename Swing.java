@@ -5,12 +5,17 @@
         private int currentFrame = 0;
         private int frameDelay = 0;
         private boolean hit = false;//prevents multihits
+        public GreenfootSound damageSound;
+        private GreenfootSound sword;
         public Swing() {
             for (int i = 0; i < 3; i++) {
                 frames[i] = new GreenfootImage("images/attacks/swing" + (i + 1) + ".png");
             }
             frames[0] = ImageUtils.scale("attacks/leftswing.png", 120, 60);
             setImage(frames[0]);
+            damageSound = new GreenfootSound("enemy_damage.mp3");
+            sword = new GreenfootSound("sword_1.mp3");
+            sword.play();
         }
     
         public void act() {
@@ -35,6 +40,7 @@
             if (!hit) {
                 Actor enemy = getOneIntersectingObject(Enemy.class);
                 if (enemy != null) {
+                    damageSound.play();
                     if (enemy instanceof FalseKnightHurtBox) {
                         ((FalseKnightHurtBox) enemy).takeDamage(4);
                     } else if (enemy instanceof Walker) {

@@ -5,7 +5,7 @@ import java.util.List;
 public class FalseKnight extends PhysicsObject {
     int health = 200;
     int hitFrames;
-    
+
     // Animation frames
     private GreenfootImage[] idleImages;
     private GreenfootImage[] attackImages;
@@ -13,7 +13,8 @@ public class FalseKnight extends PhysicsObject {
     private GreenfootImage hitImage;
     private GreenfootImage[] staggerImages;
     private GreenfootImage[] unstaggerImages;
-    
+    private GreenfootImage[] deadImages;
+
     // Frame counters
     private int idleFrame = 0;
     private int swingFrame = 0;
@@ -36,13 +37,23 @@ public class FalseKnight extends PhysicsObject {
 
     private Random rand = new Random();
 
-    //Horizontal speed midair
+    // Horizontal speed midair
     private static final int MIDAIR_HORIZONTAL_SPEED = 5;
 
-    //-1 for left, 1 for right
+    // -1 for left, 1 for right
     private int midairDirection = 0;
-    
+    private boolean dead = false;
+
+    private boolean hasSpawnedRock = false; // NEW: prevent multiple spawns per slam
+
+    private GreenfootSound deathSound;
+    private GreenfootSound slam;
+    private GreenfootSound land;
+
     public FalseKnight() {
+        deathSound = new GreenfootSound("Boss Defeat.mp3");
+        slam = new GreenfootSound("false_knight_strike_ground.mp3");
+        land = new GreenfootSound("false_knight_land.mp3");
         loadAnimations();
         setImage(idleImages[0]);
     }
@@ -51,32 +62,23 @@ public class FalseKnight extends PhysicsObject {
         idleImages = new GreenfootImage[3];
         attackImages = new GreenfootImage[4];
         jumpImages = new GreenfootImage[5];
-        staggerImages = new GreenfootImage[5];
-        unstaggerImages= new GreenfootImage[2];
+        deadImages = new GreenfootImage[3];
 
-        
-        staggerImages[0] = ImageUtils.scale("enemies/falseKnight/stagger1.png", 450, 225);
-        staggerImages[1] = ImageUtils.scale("enemies/falseKnight/stagger2.png", 450, 225);
-        staggerImages[2] = ImageUtils.scale("enemies/falseKnight/stagger3.png", 450, 225);
-        staggerImages[3] = ImageUtils.scale("enemies/falseKnight/stagger4.png", 450, 225);
-        staggerImages[4] = ImageUtils.scale("enemies/falseKnight/stagger5.png", 450, 225);
-        
-        unstaggerImages[0] = ImageUtils.scale("enemies/falseKnight/unstagger1.png", 450, 225);
-        unstaggerImages[1] = ImageUtils.scale("enemies/falseKnight/unstagger2.png", 450, 225);
-        
+        deadImages[0] = ImageUtils.scale("enemies/falseKnight/die1.png", 255, 250);
+        deadImages[1] = ImageUtils.scale("enemies/falseKnight/die2.png", 255, 250);
+        deadImages[2] = ImageUtils.scale("enemies/falseKnight/die3.png", 255, 275);
+
         idleImages[0] = ImageUtils.scale("enemies/falseKnight/idle1.png", 450, 225);
         idleImages[1] = ImageUtils.scale("enemies/falseKnight/idle2.png", 450, 225);
         idleImages[2] = ImageUtils.scale("enemies/falseKnight/idle3.png", 450, 225);
-        
+
         hitImage = ImageUtils.scale("enemies/falseKnight/hit.png", 450, 225);
-        
-        
+
         attackImages[0] = ImageUtils.scale("enemies/falseKnight/swing1.png", 450, 225);
         attackImages[1] = ImageUtils.scale("enemies/falseKnight/swing2.png", 450, 225);
         attackImages[2] = ImageUtils.scale("enemies/falseKnight/swing3.png", 400, 225);
         attackImages[3] = ImageUtils.scale("enemies/falseKnight/swing4.png", 450, 225);
 
-        
         jumpImages[0] = ImageUtils.scale("enemies/falseKnight/jump1.png", 475, 225);
         jumpImages[1] = ImageUtils.scale("enemies/falseKnight/jump2.png", 450, 225);
         jumpImages[2] = ImageUtils.scale("enemies/falseKnight/jump3.png", 450, 250);
@@ -85,58 +87,61 @@ public class FalseKnight extends PhysicsObject {
     }
 
     public void act() {
-        if (hitFrames > 0) {
-            setImage(hitImage);
-            hitFrames--;
-            
-            if (health <= 0 && hitFrames == 0) {
-                World world = getWorld();
-                
-                if (world != null) {
-                    world.removeObject(this);
-                    
-                    List<FalseKnightHurtBox> boxes = world.getObjects(FalseKnightHurtBox.class);
-                    
-                    for (int i = 0; i < boxes.size(); i++) {
-                        world.removeObject(boxes.get(i));
+        if (!dead) {
+            if (hitFrames > 0) {
+                hitFrames--;
+
+                if (health <= 0 && hitFrames == 0) {
+                    World world = getWorld();
+                    if (world != null) {
+                        die();
+                        List<FalseKnightHurtBox> boxes = world.getObjects(FalseKnightHurtBox.class);
+                        for (int i = 0; i < boxes.size(); i++) {
+                            world.removeObject(boxes.get(i));
+                        }
                     }
                 }
+                return;
             }
 
+            mainFrame++;
+            applyGravity();
+            checkGround();
+            checkWall();
 
-            return;
-        }
-        mainFrame++;
-        applyGravity();
-        checkGround();
-        checkWall();
-
-        if (isSwinging) {
-            animateSwing();
-        } else if (isSlamming) {
-            animateSlam();
-            moveMidairHorizontally();
-            checkLandingResetDirection();
-        } else if (isJumping) {
-            animateJump();
-            moveMidairHorizontally();
-            if (isOnGround()) {
-                isJumping = false;
-                jumpFrame = 0;
-                midairDirection = 0;  // reset direction on landing
+            if (isSwinging) {
+                animateSwing();
+            } else if (isSlamming) {
+                animateSlam();
+                moveMidairHorizontally();
+                checkLandingResetDirection();
+            } else if (isJumping) {
+                animateJump();
+                moveMidairHorizontally();
+                if (isOnGround()) {
+                    isJumping = false;
+                    jumpFrame = 0;
+                    midairDirection = 0;
+                }
+            } else {
+                animateIdle();
+                if (mainFrame % (health+1 / 10) == 0) {
+                    doRandomAction();
+                }
             }
         } else {
-            animateIdle();
-
-            if (mainFrame % health/10 == 0) {
-                doRandomAction();
+            applyGravity();
+            checkGround();
+            checkWall();
+            if (mainFrame < 20) {
+                mainFrame++;
             }
+            setImage(deadImages[mainFrame / 10]);
         }
     }
 
     private void doRandomAction() {
         turnTowardPlayer();
-
         int action = rand.nextInt(2); // 0 = swing, 1 = slam
         if (action == 0) {
             startSwing();
@@ -160,15 +165,9 @@ public class FalseKnight extends PhysicsObject {
     }
 
     private void flipAllImages() {
-        for (int i = 0; i < idleImages.length; i++) {
-            idleImages[i].mirrorHorizontally();
-        }
-        for (int i = 0; i < attackImages.length; i++) {
-            attackImages[i].mirrorHorizontally();
-        }
-        for (int i = 0; i < jumpImages.length; i++) {
-            jumpImages[i].mirrorHorizontally();
-        }
+        for (GreenfootImage img : idleImages) img.mirrorHorizontally();
+        for (GreenfootImage img : attackImages) img.mirrorHorizontally();
+        for (GreenfootImage img : jumpImages) img.mirrorHorizontally();
     }
 
     private void animateIdle() {
@@ -184,7 +183,6 @@ public class FalseKnight extends PhysicsObject {
 
     private void animateSwing() {
         int index = swingFrame / ATTACK_ANIM_SPEED;
-
         if (index < attackImages.length) {
             setImage(attackImages[index]);
             swingFrame++;
@@ -195,6 +193,7 @@ public class FalseKnight extends PhysicsObject {
             if (world != null) {
                 int waveDirection = facingRight ? 5 : -5;
                 world.spawnWave(waveDirection, getX(), getY() + 60);
+                slam.play();
             }
         }
     }
@@ -206,19 +205,10 @@ public class FalseKnight extends PhysicsObject {
             Player player = world.getPlayer();
             if (player == null) return;
 
-            // Pick direction once when jump starts
-            if (player.getX() > getX()) {
-                midairDirection = 1;
-                if (!facingRight) {
-                    facingRight = true;
-                    flipAllImages();
-                }
-            } else {
-                midairDirection = -1;
-                if (facingRight) {
-                    facingRight = false;
-                    flipAllImages();
-                }
+            midairDirection = player.getX() > getX() ? 1 : -1;
+            if ((midairDirection == 1 && !facingRight) || (midairDirection == -1 && facingRight)) {
+                facingRight = !facingRight;
+                flipAllImages();
             }
 
             setVelocityY(-20);
@@ -241,25 +231,17 @@ public class FalseKnight extends PhysicsObject {
             Player player = world.getPlayer();
             if (player == null) return;
 
-            // Pick direction once when slam starts
-            if (player.getX() > getX()) {
-                midairDirection = 1;
-                if (!facingRight) {
-                    facingRight = true;
-                    flipAllImages();
-                }
-            } else {
-                midairDirection = -1;
-                if (facingRight) {
-                    facingRight = false;
-                    flipAllImages();
-                }
+            midairDirection = player.getX() > getX() ? 1 : -1;
+            if ((midairDirection == 1 && !facingRight) || (midairDirection == -1 && facingRight)) {
+                facingRight = !facingRight;
+                flipAllImages();
             }
 
             setVelocityY(SLAM_FORCE);
             isSlamming = true;
             jumpFrame = 0;
             slamFrame = 0;
+            hasSpawnedRock = false; // reset rock spawn flag on new slam
         }
     }
 
@@ -269,7 +251,6 @@ public class FalseKnight extends PhysicsObject {
                 jumpFrame++;
             }
         }
-
         setImage(jumpImages[jumpFrame]);
 
         if (jumpFrame == jumpImages.length - 1) {
@@ -278,38 +259,50 @@ public class FalseKnight extends PhysicsObject {
             } else if (isOnGround()) {
                 isSlamming = false;
                 jumpFrame = 0;
-                midairDirection = 0;  // reset direction on landing
+                midairDirection = 0;
             }
         }
     }
 
     private void moveMidairHorizontally() {
-        if (midairDirection == 0) return; // no movement direction set
-
+        if (midairDirection == 0) return;
         setLocation(getX() + (midairDirection * MIDAIR_HORIZONTAL_SPEED), getY());
     }
 
     private void checkLandingResetDirection() {
-        if (isOnGround()) {
+        if (isOnGround() && !hasSpawnedRock) {
+            MyWorld world = (MyWorld) getWorld();
+            land.play();
+            // Spawn 3 rocks
+            world.spawnRock();
+            world.spawnRock();
+            world.spawnRock();
+            hasSpawnedRock = true;
             midairDirection = 0;
         }
     }
+
     public void decreaseHealth(int amount) {
         health -= amount;
-        hitFrames = 5;
-        setImage(hitImage);
+        hitFrames = 2;
 
         List<Player> players = getWorld().getObjects(Player.class);
         if (!players.isEmpty()) {
             Player player = players.get(0);
             player.checkPogo();
-            player.addSoul(15);
+            player.addSoul(5);
         }
     }
-    public void stagger(){
-        
-    }
-    public void unstagger(){
-        
+
+    public void die() {
+        deathSound.play();
+        World world = getWorld();
+        setVelocityY(-15);
+        dead = true;
+        mainFrame = 0;
+
+        if (world != null) {
+            ((MyWorld) world).killedFK();
+        }
     }
 }
