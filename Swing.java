@@ -26,6 +26,7 @@ public class Swing extends PlayerAttacks {
         setImage(frames[0]);
 
         damageSound = new GreenfootSound("enemy_damage.mp3");
+        damageSound.setVolume(40);//makes damageSound quieter
         sword = new GreenfootSound("sword_1.mp3");
         sword.play();
     }

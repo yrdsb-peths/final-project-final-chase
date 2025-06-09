@@ -12,7 +12,7 @@ public class AspidBullet extends Enemy
     //check if bulletDirection set
     private boolean directionSet = false;
 
-    //Constructor
+    //gets angle from location to playerlocation once, moves in direction
     public AspidBullet() {
         //Load and resize the bullet image
         bullet = ImageUtils.scale("enemies/Aspid/projectile.png", 30, 30);

@@ -25,6 +25,9 @@ public class Walker extends Enemy {
     private Random rand = new Random();
     private int hitFrames = 0;
 
+    //2 behaviours - wander and chase
+    //wander by default
+    //chase if player nearby or damage taken
     public Walker() {
         // Load run animation frames
         runImages = new GreenfootImage[4];
@@ -140,5 +143,6 @@ public class Walker extends Enemy {
         if (player != null) {
             player.addSoul(15);
         }
+        chasingPlayer = true;//start chase if damage taken
     }
 }

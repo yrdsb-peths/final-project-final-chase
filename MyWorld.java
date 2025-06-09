@@ -23,8 +23,8 @@ public class MyWorld extends World {
         bossMusic.setVolume(MVolume*10);
         crossroads = new GreenfootSound("crossroads.mp3");
         crossroads.setVolume(MVolume*10);
-        startMenu();
-        //startGame();
+        //startMenu();
+        startGame();
     }
 
     public void startMenu(){
@@ -116,7 +116,21 @@ public class MyWorld extends World {
 
         addObject(new Transition(40, 120, 1,900,400), 5, 360);
     }
-
+    
+    public void screenNeg1(){//room 1 offshoot
+        GreenfootImage bg = new GreenfootImage("images/backgrounds/screenNeg1.png");
+        bg.scale(getWidth(), getHeight());
+        setBackground(bg);
+        addObject(new Ground(400, 10), 574, 214);
+        addObject(new Ground(100, 10), 317, 94);
+        addObject(new Roof(400, 10), 643, 40);
+        addObject(new Wall(10, 100), 309, 50);
+        addObject(new Wall(10, 200), 369, 196);
+        addObject(new Wall(10, 300), 768, 189);
+        addObject(new Wall(10, 50), 442, 20);
+        addObject(new Transition(200, 10, 1,400,400), 388, 0);
+        addObject(new Walker(), 576, 182);
+    }
     public void screen1() {//starting room
         GreenfootImage bg = new GreenfootImage("images/backgrounds/screen1.png");
         bg.scale(getWidth(), getHeight());
@@ -136,6 +150,7 @@ public class MyWorld extends World {
 
         addObject(new Transition(40, 200, 0,100,400), 1000, 400);
         addObject(new Transition(40, 500, 2,900,300), 0, 300);
+        addObject(new Transition(200, 25, -1,411,50), 375, 554);
     }
 
     private void screen2() {
@@ -433,6 +448,7 @@ public class MyWorld extends World {
     
         // Condensed version using a switch expression
         switch (inputScreen) {
+            case -1 -> screenNeg1();
             case 0 -> testWorld();
             case 1 -> screen1();
             case 2 -> screen2();

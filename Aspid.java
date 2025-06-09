@@ -22,7 +22,10 @@ public class Aspid extends Enemy {
 
     private boolean facingLeft = true;  
 
-    // constructor sets images and random
+    
+    
+    //wander - pick random angle, move random duration
+    //shoot - spawn an aspidBullet at location
     public Aspid() { 
         flyImage = new GreenfootImage[2];  
         flyImage[0] = ImageUtils.scale("enemies/aspid/fly1.png", 70, 60);  
@@ -33,7 +36,7 @@ public class Aspid extends Enemy {
         rand = new Random();  
     }
 
-    // spawns bullet in world
+    //spawns bullet in world
     public void shoot() { 
         MyWorld world = (MyWorld) getWorld();  
         if(world != null) world.spawnBullet(getX(), getY());  
