@@ -12,10 +12,11 @@ public class MyWorld extends World {
     boolean FKDead = false;
     private GreenfootSound bossMusic;
     private GreenfootSound crossroads;
-    public int MVolume = 5;
+    public int MVolume = 7;
     Label controlsLabel;
     Label MVolumeLabel;
     Label startMenuLabel;
+    Label deathLabel;
     public MyWorld() {
         super(1000, 600, 1);
         bossMusic = new GreenfootSound("Boss Battle 1.mp3");
@@ -87,7 +88,7 @@ public class MyWorld extends World {
         screenDim = new ScreenDim(player);
         addObject(screenDim,500,300);
         
-        screen11(); //starting screen
+        screen1(); //starting screen
     }
     
     private void testWorld() {//the code for this screen is the old format 
@@ -491,5 +492,8 @@ public class MyWorld extends World {
         int x = Greenfoot.getRandomNumber(901) + 50; // Random value from 50 to 950
         addObject(new Rock(), x, 0);
     }
-
+    public void deathText(){
+        deathLabel = new Label("Restart: [space]\nMenu: [shift]", 50);
+        addObject(deathLabel,500,300);
+    }
 }

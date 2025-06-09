@@ -1,35 +1,42 @@
-import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+import greenfoot.*;  //(World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 public class AspidBullet extends Enemy
 {
+    //Bullet image and player reference
     private GreenfootImage bullet;
-    private Player player; 
+    private Player player;
+
+    //health and 
     public int health = 1;
-    private int hitFrames = 0;
-    private boolean directionSet = false;  // Add this as a field in the class
-    public AspidBullet(){
+
+    //check if bulletDirection set
+    private boolean directionSet = false;
+
+    //Constructor
+    public AspidBullet() {
+        //Load and resize the bullet image
         bullet = ImageUtils.scale("enemies/Aspid/projectile.png", 30, 30);
         setImage(bullet);
     }
 
-    public void act()
-    {
+    //Runs every frame
+    public void act() {
         if (player == null) {
-            // Find the player in the world once
+            //Find the player object in the world
             player = getWorld().getObjects(Player.class).stream().findFirst().orElse(null);
         }
+
         if (player != null) {
             moveTowardsPlayer();
             checkWalls();
-        } else {
-            // No player found, maybe just move forward or do nothing
-            move(-10);  // or no movement
         }
-        if(health<1){
+
+        if (health < 1) {
             getWorld().removeObject(this);
         }
     }
 
+    //if touching borders, removeObject
     private void checkWalls() {
         if (isAtEdge()) {
             World world = getWorld();
@@ -39,35 +46,35 @@ public class AspidBullet extends Enemy
         }
     }
 
-    private void moveTowardsPlayer(){
+    //set bullet direction once and move
+    private void moveTowardsPlayer() {
         if (!directionSet) {
             int destinationX = player.getX();
             int destinationY = player.getY();
-    
+
             int dx = destinationX - getX();
             int dy = destinationY - getY();
-    
+
+            //Calculate angle between bullet and player
             double angle = Math.toDegrees(Math.atan2(dy, dx));
             setRotation((int)angle);
-    
-            directionSet = true;  // Lock the direction after setting it once
+
+            directionSet = true;  //Lock direction so it doesn't change again
         }
-        move(10);  // Always move forward in the fixed direction
+
+        move(10);  //Move bullet forward
     }
-    
-    private void checkCollision(){
-        if(isTouching(WorldBlocks.class)){
-            getWorld().removeObject(this);
-        }
-    }
-    
+
+
+    //called when hit in swing or fireball
     public void decreaseHealth(int amount) {
         health -= amount;
-        hitFrames = 5;
+
         Player player = (Player) getWorld().getObjects(Player.class).get(0);
-        player.checkPogo();
+
         if (player != null) {
-            player.addSoul(1);
+            player.checkPogo();   //Player bounces when bullet is hit
+            player.addSoul(1);    //Add soul to player
         }
     }
 }

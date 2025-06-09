@@ -1,10 +1,12 @@
-import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+import greenfoot.*;
 
 public class FalseKnightWave extends Enemy {
+
     int direction;
     GreenfootImage[] wave;
     int frame;
 
+    //constructor
     public FalseKnightWave(int direction) {
         this.direction = direction;
         wave = new GreenfootImage[3];
@@ -12,31 +14,33 @@ public class FalseKnightWave extends Enemy {
         wave[1] = ImageUtils.scale("enemies/falseKnight/wave2.png", 100, 100);
         wave[2] = ImageUtils.scale("enemies/falseKnight/wave3.png", 100, 100);
 
-        // Mirror the images if direction is less than 0
-        if (direction < 0) {
-            for (int i = 0; i < wave.length; i++) {
+        if(direction < 0) {
+            for(int i = 0; i < wave.length; i++) {
                 wave[i].mirrorHorizontally();
             }
         }
 
-        setImage(wave[0]); // Set the image of this actor
+        setImage(wave[0]);
     }
 
+    //main loop
     public void act() {
         move(direction);
         animateWave();
         checkWalls();
     }
 
+    //animation frames
     public void animateWave() {
         frame++;
         setImage(wave[frame / 10 % 3]);
     }
 
+    //removes if offscreen
     private void checkWalls() {
-        if (getX() < 10 || getX() > 990) {
+        if(getX() < 10 || getX() > 990) {
             World world = getWorld();
-            if (world != null) {
+            if(world != null) {
                 world.removeObject(this);
             }
         }

@@ -12,7 +12,7 @@ public class Walker extends Enemy {
     private GreenfootImage hitImage;
 
     private int direction = 1; // 1 = right, -1 = left
-    private int walkSpeed = 1;
+    private int walkSpeed = 2;
     private int walkTimer = 0;
     private int pauseTimer = 0;
     private boolean isPaused = false;
@@ -35,6 +35,8 @@ public class Walker extends Enemy {
         idleImage = new GreenfootImage(runImages[0]);
         setImage(idleImage);
         hitImage = ImageUtils.scale("enemies/walker/walkerHit.png", 50, 60);
+
+        walkTimer = rand.nextInt(120) + 60; // initialize walk timer
     }
 
     public void act() {
@@ -45,13 +47,16 @@ public class Walker extends Enemy {
             applyGravity();
             checkGround();
             checkWall();
+
             if (x) {
                 wanderOrChase();
             }
+
             if (!chasingPlayer) {
                 x = !x; // Slow down if not chasing
             }
-            if (health <= 0) { // If health reaches 0 remove the walker
+
+            if (health <= 0) {
                 getWorld().removeObject(this);
             }
         }
@@ -60,39 +65,38 @@ public class Walker extends Enemy {
     private void wanderOrChase() {
         Player player = getNearestPlayer();
 
-        // If player is near, start chasing and never stop
+        // Chase if player is close
         if (player != null && isPlayerNearby(player)) {
             chasingPlayer = true;
         }
 
         if (chasingPlayer && player != null) {
-            if (player.getX() > getX()) {
-                direction = 1;
-            } else {
-                direction = -1;
-            }
-
-            move(direction * walkSpeed);
+            direction = player.getX() > getX() ? 1 : -1;
+            move(direction * walkSpeed/2); // chase twice as fast
             animateRun();
             return;
         }
 
-        // Random wandering behavior (only before chasing starts)
+        // Wander when not chasing
         if (isPaused) {
             pauseTimer--;
             setImage(getMirroredImage(idleImage));
             if (pauseTimer <= 0) {
                 isPaused = false;
-                walkTimer = rand.nextInt(120) + 60;
+                walkTimer = rand.nextInt(120) + 60; // reset walk timer after pause
             }
         } else {
-            move(direction * walkSpeed);
+            move(direction * walkSpeed /2); // walk at half speed when wandering
             animateRun();
 
             walkTimer--;
             if (walkTimer <= 0 || isAtEdge() || isTouching(Ground.class)) {
-                direction *= -1;
-                maybePause();
+                // Flip direction randomly before pausing
+                isPaused = true;
+                pauseTimer = rand.nextInt(50) + 30; // pause duration
+                if (rand.nextBoolean()) {
+                    direction *= -1;
+                }
             }
         }
     }
@@ -115,15 +119,6 @@ public class Walker extends Enemy {
         }
         return img;
     }
-
-    private void maybePause() {
-        if (rand.nextBoolean()) {
-            isPaused = true;
-            pauseTimer = rand.nextInt(60) + 30;
-        }
-    }
-
-
 
     private Player getNearestPlayer() {
         return (Player) getWorld().getObjects(Player.class).stream()

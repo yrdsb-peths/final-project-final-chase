@@ -1,23 +1,25 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
-
+//100% NOT THE BEST WAY TO DO THIS
+//but again, whatever
 public class MenuButton extends Actor {
     private int function;
 
+    //constructor
     public MenuButton(int width, int height, int function) {
         GreenfootImage img = new GreenfootImage(width, height);
-        img.setColor(new Color(50, 255, 255, 0)); // Cyan, semi-transparent
+        img.setColor(new Color(50, 255, 255, 0));
         img.fill();
         setImage(img);
         this.function = function;
     }
 
+    //main loop
     public void act() {
         if (!Greenfoot.mouseClicked(this)) return;
 
         MyWorld world = (MyWorld) getWorld();
         if (world == null) return;
 
-        // Handle button action first, then clear/add UI as needed
         switch (function) {
             case 0 -> {
                 world.clearAll();
@@ -31,7 +33,7 @@ public class MenuButton extends Actor {
                 world.clearAll();
                 world.controls();
             }
-            case 3  -> {
+            case 3 -> {
                 MVolumeButton();
                 world.clearAll();
                 world.settings();
@@ -44,8 +46,7 @@ public class MenuButton extends Actor {
         }
     }
 
-
-
+    //cycles MVolume
     public void MVolumeButton() {
         MyWorld world = (MyWorld) getWorld();
         if (world == null) return;

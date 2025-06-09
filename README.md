@@ -1,20 +1,6 @@
-# Set up Greenfoot for VSCode
 
-[Mac]
-1. Open `Finder` and navigate to the Applications folder.
-2. Right-click on the Greenfoot app and select `Show Package Contents`.
-3. In the opened folder, go to `Contents -> Resources -> Java` and find the `greenfoot.jar` file.
-4. Copy this `greenfoot.jar` to the `/lib` Folder in this project.
-
-[Windows]
-1. Open `File Explorer` and navigate to `C:\Program Files\Greenfoot` and locate the `greenfoot.jar` file.
-2. Copy this `greenfoot.jar` to the `\lib` Folder in this project.
-
-<br>
-<br>
-
-# project.greenfoot
-Copy the `project.greenfoot.md` file and rename it to `project.greenfoot`
-
-# Learn Markdown Basics
-[Markdown basics](https://www.markdownguide.org/getting-started/)
+Code/Programming by Chase Coulter 2025
+All credit for sound effects and visuals go to Team Cherry
+Images Sourced from https://drive.google.com/drive/folders/1lx02_w9TFTYdR3aggI1gbXcLr69roaNV
+Sounds Sourced from https://www.dropbox.com/scl/fo/mm3x18p8wqkewb7ezshye/AJutnYm09fil6iiqhSogp7k?rlkey=pgekxzquqgselmlc56mf8l8uv&e=2&dl=0
+i would try to credit all of the random reddit/greenfoot posts from years ago for coding help, but there's too many

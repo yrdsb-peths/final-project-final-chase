@@ -1,5 +1,6 @@
 import greenfoot.*;
 
+
 public class FalseKnightHurtBox extends Enemy {
     private FalseKnight target;
 
@@ -10,7 +11,7 @@ public class FalseKnightHurtBox extends Enemy {
         img.fill();
         setImage(img);
     }
-
+    //follows FalseKnight position
     public void act() {
         if (target != null) {
             setLocation(target.getX(), target.getY());

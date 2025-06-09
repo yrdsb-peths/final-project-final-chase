@@ -6,11 +6,13 @@ public class PhysicsObject extends Actor {
     public final int maxFallSpeed = 10;
     public boolean onGround = false;
 
+    //main loop
     public void act() {
         applyGravity();
         checkGround();
     }
 
+    //applies gravity and fall speed limit
     public void applyGravity() {
         velocityY += gravity;
         if (velocityY > maxFallSpeed) {
@@ -19,12 +21,13 @@ public class PhysicsObject extends Actor {
         setLocation(getX(), getY() + velocityY);
     }
 
+    //checks for ground collision
     public void checkGround() {
         Actor ground = getOneIntersectingObject(Ground.class);
 
         if (ground != null) {
             while (isTouching(Ground.class)) {
-                setLocation(getX(), getY() - 1); // move out of ground
+                setLocation(getX(), getY() - 1);
             }
             velocityY = 0;
             onGround = true;
@@ -32,50 +35,49 @@ public class PhysicsObject extends Actor {
             onGround = false;
         }
 
-        // Failsafe for falling through world
         if (getY() + getImage().getHeight() / 2 >= getWorld().getHeight()) {
             setLocation(getX(), getWorld().getHeight() - getImage().getHeight() / 2);
             velocityY = 0;
             onGround = true;
         }
-
     }
 
-    public void checkRoof(){
+    //checks for ceiling collision
+    public void checkRoof() {
         Actor roof = getOneIntersectingObject(Roof.class);
         if (roof != null) {
             while (isTouching(Ground.class)) {
                 setLocation(getX(), getY() + 1);
             }
             velocityY = 2;
-            
         }
     }
+
+    //checks for left/right wall collisions
     public void checkWall() {
         Actor wall = getOneIntersectingObject(Wall.class);
-    
         if (wall != null) {
-            // Leeway for side collisions]
             if (Math.abs(getX() - wall.getX()) <= wall.getImage().getWidth() / 2 + getImage().getWidth() / 2) {
                 if (getX() < wall.getX()) {
-                    // Touching the left side of the wall
                     setLocation(wall.getX() - wall.getImage().getWidth() / 2 - getImage().getWidth() / 2, getY());
                 } else {
-                    // Touching the right side of the wall
                     setLocation(wall.getX() + wall.getImage().getWidth() / 2 + getImage().getWidth() / 2, getY());
                 }
             }
         }
     }
 
+    //returns true if touching ground
     public boolean isOnGround() {
         return onGround;
     }
 
+    //sets vertical speed (neg is up)
     public void setVelocityY(int value) {
         this.velocityY = value;
     }
 
+    //gets vertical speed (neg is up)
     public int getVelocityY() {
         return velocityY;
     }
