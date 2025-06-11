@@ -3,7 +3,7 @@ import java.util.Random;
 import java.util.List;
 
 public class FalseKnight extends PhysicsObject {
-    int health = 2;
+    int health = 200;
     int hitFrames;
 
     // Animation frames

@@ -41,7 +41,7 @@ public class MyWorld extends World {
     public void act() {
         if (winPending && System.currentTimeMillis() >= winTriggerTime) {
             winPending = false;
-            win(); // Call the win screen
+            win();
         }
     }
 
@@ -97,7 +97,7 @@ public class MyWorld extends World {
         screenDim = new ScreenDim(player);
         addObject(screenDim,500,300);
         
-        screen11(); //starting screen
+        screen1(); //starting screen
     }
     
     private void testWorld() {//the code for this screen is the old format 
