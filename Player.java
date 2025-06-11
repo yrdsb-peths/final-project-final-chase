@@ -124,7 +124,9 @@ public class Player extends PhysicsObject {
             if (dashCooldown > 0) dashCooldown--;
 
             checkHit();
-
+            if(soul>100){
+                soul = 100;
+            }
             MyWorld world = (MyWorld) getWorld();
             world.setScore(health);
             world.setSoul(soul);
@@ -280,7 +282,7 @@ public class Player extends PhysicsObject {
         switch (dir) {
             case "right": spawnX += swingDistance; break;
             case "left": spawnX -= swingDistance; break;
-            case "up": spawnY -= (swingDistance + 10); break;//extra range up
+            case "up": spawnY -= (swingDistance + 20); break;//extra range up
             case "down": spawnY += (swingDistance + 20); break;//extra range down
         }
 

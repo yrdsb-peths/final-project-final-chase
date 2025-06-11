@@ -3,6 +3,8 @@ import java.util.List;
 import java.util.Random;
 
 public class MyWorld extends World {
+    private boolean winPending = false;
+    private long winTriggerTime = 0;
     Swing objectA = new Swing();
     public int score = 0;
     Label scoreLabel;
@@ -23,8 +25,8 @@ public class MyWorld extends World {
         bossMusic.setVolume(MVolume*10);
         crossroads = new GreenfootSound("crossroads.mp3");
         crossroads.setVolume(MVolume*10);
-        //startMenu();
-        startGame();
+        startMenu();
+        //startGame();
     }
 
     public void startMenu(){
@@ -36,6 +38,13 @@ public class MyWorld extends World {
         addObject(new MenuButton(200, 50,0), 500, 350);//start
         addObject(new MenuButton(315, 50,1), 500, 400);//settings
     }
+    public void act() {
+        if (winPending && System.currentTimeMillis() >= winTriggerTime) {
+            winPending = false;
+            win(); // Call the win screen
+        }
+    }
+
     public void controls() {
         GreenfootImage bg = new GreenfootImage("images/menu/blankMenuBacking.png");
         bg.scale(getWidth(), getHeight());
@@ -88,7 +97,7 @@ public class MyWorld extends World {
         screenDim = new ScreenDim(player);
         addObject(screenDim,500,300);
         
-        screen1(); //starting screen
+        screen11(); //starting screen
     }
     
     private void testWorld() {//the code for this screen is the old format 
@@ -494,7 +503,12 @@ public class MyWorld extends World {
     public void killedFK(){
         FKDead = true;
         bossMusic.stop();
+    
+        // Set up a delayed win
+        winPending = true;
+        winTriggerTime = System.currentTimeMillis() + 5000;
     }
+
     public int getMV(){
         return MVolume;
     }
@@ -505,11 +519,19 @@ public class MyWorld extends World {
         bossMusic.setVolume(MVolume*10);
     }
     public void spawnRock() {
-        int x = Greenfoot.getRandomNumber(901) + 50; // Random value from 50 to 950
+        int x = Greenfoot.getRandomNumber(901) + 50;//50 to 950
         addObject(new Rock(), x, 0);
     }
     public void deathText(){
         deathLabel = new Label("Restart: [space]\nMenu: [shift]", 50);
         addObject(deathLabel,500,300);
     }
+    public void win(){
+        addObject(new BlackBox(1000, 600), 500, 300);
+        
+        Label thankYouLabel = new Label("Thank you for playing!\n and GG*", 60);
+        addObject(thankYouLabel, getWidth() / 2, getHeight() / 2);
+    }
+
+
 }

@@ -44,6 +44,9 @@ public class Aspid extends Enemy {
 
     // main loop controls actions
     public void act() { 
+        checkWall();
+        checkGround();
+        checkRoof();
         if(hitFrames > 0) {
             setImage(hitImage);  
             updateFacing();  
